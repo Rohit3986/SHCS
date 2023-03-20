@@ -76,12 +76,13 @@ def slots(request):
     return render(request,'slots.html')
 
 def dashboard(request):
+    disease_list=[]
     if request.method=="POST":
-        a = request.POST['frm_btn']
-        
-        print("bhai symptoms ka list dekhna toh ",a)
+        symptoms = request.POST['frm_btn']
+        print("bhai symptoms ka list dekhna toh ",symptoms,type(symptoms))
+        disease_list=get_disease(symptoms)
     symptoms = Symptom.objects.all()
-    return render(request,'dashboard.html',{'symptoms':symptoms})
+    return render(request,'dashboard.html',{'symptoms':symptoms,'disease_list':disease_list})
 
 def get_all_symptoms():
     url = "https://healthservice.priaid.ch/symptoms?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFhc3RoYXNpbmdoLnRAZ21haWwuY29tIiwicm9sZSI6IlVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiI5MzIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy92ZXJzaW9uIjoiMTA5IiwiaHR0cDovL2V4YW1wbGUub3JnL2NsYWltcy9saW1pdCI6IjEwMCIsImh0dHA6Ly9leGFtcGxlLm9yZy9jbGFpbXMvbWVtYmVyc2hpcCI6IkJhc2ljIiwiaHR0cDovL2V4YW1wbGUub3JnL2NsYWltcy9sYW5ndWFnZSI6ImVuLWdiIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoiMjA5OS0xMi0zMSIsImh0dHA6Ly9leGFtcGxlLm9yZy9jbGFpbXMvbWVtYmVyc2hpcHN0YXJ0IjoiMjAyMy0wMy0xNSIsImlzcyI6Imh0dHBzOi8vYXV0aHNlcnZpY2UucHJpYWlkLmNoIiwiYXVkIjoiaHR0cHM6Ly9oZWFsdGhzZXJ2aWNlLnByaWFpZC5jaCIsImV4cCI6MTY3OTI1MjQ1MywibmJmIjoxNjc5MjQ1MjUzfQ.Nmk3V8JT4jJ_ADEP2CTp0XuvK-jcpM8dYIo6hllB8YU&format=json&language=en-gb"
@@ -92,4 +93,17 @@ def get_all_symptoms():
         Symptom.objects.create(id=data[i]["ID"],name=data[i]["Name"])
         print(i,"done")
     print(len(data))
+
+def get_disease(symptoms_list):
+    disease_list = []
+    url = f'https://sandbox-healthservice.priaid.ch/diagnosis?symptoms={symptoms_list}&gender=female&year_of_birth=1999&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFhc3RoYXNpbmdoLnRAZ21haWwuY29tIiwicm9sZSI6IlVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIxMTk1NiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvdmVyc2lvbiI6IjIwMCIsImh0dHA6Ly9leGFtcGxlLm9yZy9jbGFpbXMvbGltaXQiOiI5OTk5OTk5OTkiLCJodHRwOi8vZXhhbXBsZS5vcmcvY2xhaW1zL21lbWJlcnNoaXAiOiJQcmVtaXVtIiwiaHR0cDovL2V4YW1wbGUub3JnL2NsYWltcy9sYW5ndWFnZSI6ImVuLWdiIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoiMjA5OS0xMi0zMSIsImh0dHA6Ly9leGFtcGxlLm9yZy9jbGFpbXMvbWVtYmVyc2hpcHN0YXJ0IjoiMjAyMy0wMy0xNSIsImlzcyI6Imh0dHBzOi8vc2FuZGJveC1hdXRoc2VydmljZS5wcmlhaWQuY2giLCJhdWQiOiJodHRwczovL2hlYWx0aHNlcnZpY2UucHJpYWlkLmNoIiwiZXhwIjoxNjc5MjkyNjkxLCJuYmYiOjE2NzkyODU0OTF9.IzvOkuSZHGcYV13epdk0jWN1Y-uxlfXmrPbR-QoXYpk&format=json&language=en-gb'
+    email = "aasthasingh.t@gmail.com"
+    passwrd = "A@shu6124"
+    symptoms_list = json.loads(symptoms_list)
+    data = json.loads(requests.get(url,json=symptoms_list,auth=(email,passwrd)).text)
+    data_len = min([3,len(data)])
+    data = data[:data_len]
+    for diesease in data:
+        disease_list.append({'name':diesease["Issue"]["Name"],'accuracy':round(diesease["Issue"]["Accuracy"],2),'prof_name':diesease["Issue"]["ProfName"],'ranking':diesease["Issue"]["Ranking"]})
+    return disease_list
     
