@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Scheduling Appointment</title>
+    <!-- Bootstrap CSS -->
+    <!-- jQuery -->
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Bootstrap Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+    <style type="text/css">
+        .calendar {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+        
+        .time-slots {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            // Initialize datepicker
+            $('#datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                todayHighlight: true,
+                startDate: new Date(),
+                autoclose: true,
+            });
+
+            // Update selected date
+            $('#datepicker').on('changeDate', function() {
+                var date = $('#datepicker').datepicker('getDate');
+                $('#selected-date').html(date.toDateString());
+            });
+
+            // Book appointment
+            $('#book-appointment').click(function() {
+                var date = $('#datepicker').datepicker('getDate');
+                alert('Appointment booked for ' + date.toDateString());
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Scheduling Appointment</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="calendar">
+                    <h4>Select a date:</h4>
+                    <div class="container">
+                        <h1>Appointment Scheduler</h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="datepicker"></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="time-slots">
+                    <h4>Select a time slot:</h4>
+                    <select class="form-control" id="timeslot">
+                        <option value="">Select a time slot</option>
+                        <option value="09:00 AM - 09:30 AM">09:00 AM - 09:30 AM</option>
+                        <option value="09:30 AM - 10:00 AM">09:30 AM - 10:00 AM</option>
+                        <option value="10:00 AM - 10:30 AM">10:00 AM - 10:30 AM</option>
+                        <option value="10:30 AM - 11:00 AM">10:30 AM - 11:00 AM</option>
+                        <option value="11:00 AM - 11:30 AM">11:00 AM - 11:30 AM</option>
+                        <option value="11:30 AM - 12:00 PM">11:30 AM - 12:00 PM</option>
+                        <option value="12:00 PM - 12:30 PM">12:00 PM - 12:30 PM</option>
+                        <option value="12:30 PM - 01:00 PM">12:30 PM - 01:00 PM</option>
+                        <option value="01:00 PM - 01:30 PM">01:00 PM - 01:30 PM</option>
+                        <option value="01:30 PM - 02:00 PM">01:30 PM - 02:00 PM</option>
+                    </select>
+                    <button class="btn btn-primary" id="confirm-btn">Confirm Appointment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

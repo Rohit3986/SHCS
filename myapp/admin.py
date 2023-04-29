@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User,Symptom
+from .models import *
 from django.contrib.auth.admin import UserAdmin as BaseAdmin
 # Register your models here.
 class UserAdmin(BaseAdmin):
@@ -26,3 +26,7 @@ admin.site.register(User, UserAdmin)
 @admin.register(Symptom)
 class SymptomAdmin(admin.ModelAdmin):
     list_display = ['id','name']
+
+@admin.register(Doctor)
+class DoctorAdmin(admin.ModelAdmin):
+    list_display = ['id','first_name','last_name','gender','experience','speciality']

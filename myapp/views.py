@@ -2,9 +2,12 @@ from django.shortcuts import render,HttpResponseRedirect
 from django.contrib.auth import authenticate,login as lk,logout as lo
 from django.contrib import messages
 from .forms import LoginForm
-from .models import User,Symptom
+from .models import *
 import requests
 import json
+from faker import Faker
+import random
+faker = Faker()
 ## Create your views here.
 def login(request):
     if request.user.is_authenticated:
@@ -95,15 +98,44 @@ def get_all_symptoms():
     print(len(data))
 
 def get_disease(symptoms_list):
-    disease_list = []
-    url = f'https://sandbox-healthservice.priaid.ch/diagnosis?symptoms={symptoms_list}&gender=female&year_of_birth=1999&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFhc3RoYXNpbmdoLnRAZ21haWwuY29tIiwicm9sZSI6IlVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIxMTk1NiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvdmVyc2lvbiI6IjIwMCIsImh0dHA6Ly9leGFtcGxlLm9yZy9jbGFpbXMvbGltaXQiOiI5OTk5OTk5OTkiLCJodHRwOi8vZXhhbXBsZS5vcmcvY2xhaW1zL21lbWJlcnNoaXAiOiJQcmVtaXVtIiwiaHR0cDovL2V4YW1wbGUub3JnL2NsYWltcy9sYW5ndWFnZSI6ImVuLWdiIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoiMjA5OS0xMi0zMSIsImh0dHA6Ly9leGFtcGxlLm9yZy9jbGFpbXMvbWVtYmVyc2hpcHN0YXJ0IjoiMjAyMy0wMy0xNSIsImlzcyI6Imh0dHBzOi8vc2FuZGJveC1hdXRoc2VydmljZS5wcmlhaWQuY2giLCJhdWQiOiJodHRwczovL2hlYWx0aHNlcnZpY2UucHJpYWlkLmNoIiwiZXhwIjoxNjc5MjkyNjkxLCJuYmYiOjE2NzkyODU0OTF9.IzvOkuSZHGcYV13epdk0jWN1Y-uxlfXmrPbR-QoXYpk&format=json&language=en-gb'
-    email = "aasthasingh.t@gmail.com"
-    passwrd = "A@shu6124"
-    symptoms_list = json.loads(symptoms_list)
-    data = json.loads(requests.get(url,json=symptoms_list,auth=(email,passwrd)).text)
-    data_len = min([3,len(data)])
-    data = data[:data_len]
-    for diesease in data:
-        disease_list.append({'name':diesease["Issue"]["Name"],'accuracy':round(diesease["Issue"]["Accuracy"],2),'prof_name':diesease["Issue"]["ProfName"],'ranking':diesease["Issue"]["Ranking"]})
-    return disease_list
+    try:
+        disease_list = []
+        url = f'https://sandbox-healthservice.priaid.ch/diagnosis?symptoms={symptoms_list}&gender=male&year_of_birth=1982&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFhc3RoYXNpbmdoLnRAZ21haWwuY29tIiwicm9sZSI6IlVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIxMTk1NiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvdmVyc2lvbiI6IjIwMCIsImh0dHA6Ly9leGFtcGxlLm9yZy9jbGFpbXMvbGltaXQiOiI5OTk5OTk5OTkiLCJodHRwOi8vZXhhbXBsZS5vcmcvY2xhaW1zL21lbWJlcnNoaXAiOiJQcmVtaXVtIiwiaHR0cDovL2V4YW1wbGUub3JnL2NsYWltcy9sYW5ndWFnZSI6ImVuLWdiIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoiMjA5OS0xMi0zMSIsImh0dHA6Ly9leGFtcGxlLm9yZy9jbGFpbXMvbWVtYmVyc2hpcHN0YXJ0IjoiMjAyMy0wMy0xNSIsImlzcyI6Imh0dHBzOi8vc2FuZGJveC1hdXRoc2VydmljZS5wcmlhaWQuY2giLCJhdWQiOiJodHRwczovL2hlYWx0aHNlcnZpY2UucHJpYWlkLmNoIiwiZXhwIjoxNjgyMDAxNTQ5LCJuYmYiOjE2ODE5OTQzNDl9.u-hguRXq-kznVYT_mQt-VUC9uHOzuD4Le3EGxt6vd2k&format=json&language=en-gb'
+        email = "aasthasingh.t@gmail.com"
+        passwrd = "A@shu6124"
+        symptoms_list = json.loads(symptoms_list)
+        data = json.loads(requests.get(url,json=symptoms_list,auth=(email,passwrd)).text)
+        print("data is ",data)
+        data_len = min([3,len(data)])
+        data = data[:data_len]
+        print(data)
+        for diesease in data:
+            disease_list.append({'name':diesease["Issue"]["Name"],'accuracy':round(diesease["Issue"]["Accuracy"],2),'prof_name':diesease["Issue"]["ProfName"],'ranking':diesease["Issue"]["Ranking"]})
+        return disease_list
+    except:
+        return 
     
+
+def bc(request):
+    return render(request,'s.html')
+
+def create_doctors(count):
+    for i in range(count):
+        first_name = faker.first_name()
+        last_name = faker.last_name()
+        email = faker.email()
+        gender = random.choice(['Male','Female'])
+        user_type = 'Doctor'
+        phone_number = '9754603986'
+        experience = random.randint(1,15)
+        password = '12345678'
+        specialties = ['Cardiologist', 'Dermatologist', 'Endocrinologist', 'Gastroenterologist', 'Neurologist', 'Oncologist', 'Pediatrician', 'Psychiatrist', 'Radiologist', 'Surgeon']
+        random_specialty = random.choice(specialties)
+        address = faker.city()
+        Doctor.objects.create(first_name=first_name,last_name=last_name,phone_number=phone_number,email=email,gender=gender,user_type=user_type,address=address,experience=experience,speciality=random_specialty)
+    
+def doctor(request):
+    doctors = Doctor.objects.all()
+    return render(request,'doctor.html',{'doctors':doctors})
+
+

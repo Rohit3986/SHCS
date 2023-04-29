@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chatbot</title>
+	<style>
+		#chatbot {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			background-color: #f1f1f1;
+			border: 1px solid #ccc;
+			border-radius: 10px;
+			padding: 10px;
+			opacity: 0.9;
+		}
+		#chatbot h2 {
+			margin-top: 0;
+			font-size: 20px;
+		}
+		#chatbot p {
+			margin-bottom: 5px;
+		}
+		#chatbot select {
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+	<h1>My Chatbot</h1>
+	<p>Welcome to my chatbot. Please click on the chat icon to open the chatbot:</p>
+	<div id="chatbot" style="display: none;">
+		<h2>Chatbot</h2>
+		<p>Please select one of the following pre-defined questions:</p>
+		<form>
+			<label for="questions">Select a question:</label>
+			<select id="questions" onchange="showAnswer()">
+				<option value="">-- Select a question --</option>
+				<option value="q1">What are your hours of operation?</option>
+				<option value="q2">What services do you offer?</option>
+				<option value="q3">How can I schedule an appointment?</option>
+			</select>
+			<br>
+			<label for="answer">Answer:</label>
+				<input type="text" id="answer" name="answer" readonly>
+		</form>
+	</div>
+	<button onclick="toggleChatbot()">Open Chatbot</button>
+
+	<script>
+		function toggleChatbot() {
+			var chatbot = document.getElementById("chatbot");
+			if (chatbot.style.display === "none") {
+				chatbot.style.display = "block";
+			} else {
+				chatbot.style.display = "none";
+			}
+		}
+
+		function showAnswer() {
+			var question = document.getElementById("questions").value;
+			var answer = "";
+			switch(question) {
+				case "q1":
+					answer = "Our hours of operation are from 9am to 5pm, Monday to Friday.";
+					break;
+				case "q2":
+					answer = "We offer a wide range of services including primary care, pediatrics, and women's health.";
+					break;
+				case "q3":
+					answer = "You can schedule an appointment by calling our office at (555) 123-4567 or using our online booking system.";
+					break;
+				default:
+					answer = "";
+			}
+			document.getElementById("answer").value = answer;
+		}
+	</script>
+</body>
+</html>

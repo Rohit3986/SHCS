@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator
 import datetime
 
 from django.contrib.auth.models import BaseUserManager,AbstractBaseUser
@@ -50,6 +51,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(verbose_name='Email',max_length=255,unique=True,blank=True)
     gender = models.CharField(choices=(('Male','Male'),('Female','Female')),max_length=10,blank=True)
     user_type = models.CharField(choices=(('Doctor','Doctor'),('Patient','Patient'),('Handler_Team','Handler_Team')),default="Patient",max_length=17,blank=True)
+    address = models.TextField(max_length=200,null=True,blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     objects = UserManager()
@@ -80,3 +82,8 @@ class User(AbstractBaseUser):
 class Symptom(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
+
+class Doctor(User):
+    experience = models.PositiveIntegerField(validators=[MaxValueValidator(30)],null=True,blank=True)
+    speciality = models.CharField(max_length=100,null=True,blank=True)
+    

@@ -1,0 +1,4 @@
+[{content_type:text,content_data:'The following pie chart shows the distribution of percentage of a certain corporate office employees in various age groups.
+Total number of employees of the corporate office = 2500'
+Study the chart carefully and answer the question that follows.},{content_type:img,content_data:'https://cracku.in/media/uploads/image_khA9Cbh.png'},{content_type:"text,content_data:The number of the corporate office employees of age group of 38+ years and above is how much percentage more than that of 28+ to 38 years?"}
+}]
