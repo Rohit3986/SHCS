@@ -61,39 +61,10 @@
         .btn {
             margin-top: 20px;
         }
+        
     </style>
     <script>
-        function booking(symptom_id, symptom_name) {
-            alert("Your Appointment is booked!!")
-        }
-        const data = []
-
-        function addSymptom(symptom_id, symptom_name) {
-            console.log("symptom_id is " + symptom_id)
-            console.log("symptom_name is " + symptom_name)
-            const trNode = document.createElement('tr');
-            const td_id_Node = document.createElement('td');
-            const td_name_Node = document.createElement('td');
-
-
-            // Change the name parameter of the element
-            td_id_Node.setAttribute("class", "text-primary fw-bold");
-            td_id_Node.setAttribute("name", "symptoms_list");
-            td_id_Node.setAttribute("id", "symptoms_list")
-            td_id_Node.setAttribute("value", symptom_id);
-            console.log(td_id_Node)
-            td_id_Node.innerText = symptom_id
-            td_name_Node.innerText = symptom_name
-            trNode.appendChild(td_id_Node)
-            trNode.appendChild(td_name_Node)
-            var symptoms_form = document.getElementById("symptoms_form")
-            yoursymptom_tbody = document.getElementById('yoursymptom_tbody')
-            yoursymptom_tbody.appendChild(trNode)
-            const form_button = document.getElementById('frm_btn')
-            data.push(symptom_id)
-            form_button.setAttribute("value", JSON.stringify(data))
-            console.log(data)
-        }
+        console.log('hii')
     </script>
     <!-- =======================================================
   * Template Name: NiceAdmin - v2.4.1
@@ -500,6 +471,73 @@
             <button onclick="selectCategory('neurology')">Neurology</button>
         </div>
         <!-- End Page Title -->
+        
+          
+          
+
+        <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: rgb(100, 100, 200);color: aliceblue;">
+                        <h3 class="modal-title" id="exampleModalLabel">Appointment Booking</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="row g-3">
+
+                            <div class="mb-3 row">
+                                <label for="staticEmail" class="col-sm-2 col-form-label">Doctor Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="Dr. Larry Fisher">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="staticEmail" class="col-sm-2 col-form-label">Speciality</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="Phychiatrist">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="staticEmail" class="col-sm-2 col-form-label">Exp</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="4+ years">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="staticEmail" class="col-sm-2 col-form-label">Fees</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="12$">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Schedule Call</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: rgb(100, 100, 200);color: aliceblue;">
+                        <h5 class="modal-title" id="exampleModalToggleLabel2">Slot Booked</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Congratulations!! Your Appointment Booked Sucessfully.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="album py-5 bg-light">
             <div class="container">
 
@@ -514,7 +552,7 @@
                             <p class="card-text">Specialty: {{doctor.speciality}}</p>
                             <p class="card-text">Experience: {{doctor.experience}}+ years</p>
                             <p class="card-text">Location: {{doctor.address}}</p>
-                            <a href="#" class="btn btn-primary" onclick="booking()">Book Appointment</a>
+                            <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Book Appointment</a>
                         </div>
                     </div>{% endfor %}
 
@@ -568,26 +606,3 @@
 
 </html>
 
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Doctor Profile Card</title>
-
-
-</head>
-
-<body>
-
-
-
-
-
-</body>
-
-</html>
-
-
-</body>
-
-</html>
