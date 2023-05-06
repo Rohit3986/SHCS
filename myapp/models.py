@@ -87,3 +87,11 @@ class Doctor(User):
     experience = models.PositiveIntegerField(validators=[MaxValueValidator(30)],null=True,blank=True)
     speciality = models.CharField(max_length=100,null=True,blank=True)
     
+class Appointment(models.Model):
+    doctor = models.ForeignKey(to=Doctor,on_delete=models.PROTECT,related_name='doctor')
+    appointment_date = models.DateField()
+    appointment_time = models.CharField(max_length=20)
+    booked_by = models.ForeignKey(to=User,on_delete=models.PROTECT,related_name='patient')
+    is_available = models.BooleanField()
+    booked_on = models.DateTimeField(auto_now_add=True)
+    

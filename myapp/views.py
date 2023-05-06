@@ -8,6 +8,7 @@ import json
 from faker import Faker
 import random
 faker = Faker()
+from datetime import *
 ## Create your views here.
 def login(request):
     if request.user.is_authenticated:
@@ -31,7 +32,7 @@ def login(request):
                 return HttpResponseRedirect("/profile/")
     else:
         fm=LoginForm()
-    return render(request,"temp.html",{"form":fm})
+    return render(request,"login.html",{"form":fm})
 
 def profile(request):
     return render(request,"profile.html")
@@ -72,11 +73,6 @@ def register(request):
         return render(request,"register.html")
     return render(request,'theatre.html')
 
-def hall(request):
-    return render(request,'hall.html')
-
-def slots(request):
-    return render(request,'slots.html')
 
 def dashboard(request):
     disease_list=[]
@@ -135,7 +131,26 @@ def create_doctors(count):
         Doctor.objects.create(first_name=first_name,last_name=last_name,phone_number=phone_number,email=email,gender=gender,user_type=user_type,address=address,experience=experience,speciality=random_specialty)
     
 def doctor(request):
+    if request.method == 'POST':
+        appointment_id = None
+        user_id = None
     doctors = Doctor.objects.all()
     return render(request,'doctor.html',{'doctors':doctors})
 
-
+def generate_appointments(start_date=None,appointment_days=None,start_time=None,end_time=None):
+    s=datetime.now().date()
+    start_time=timedelta(hours=9,minutes=0)
+    end_time=timedelta(hours=12,minutes=0)
+    duration = 30
+    print(start_time)
+    print(int((end_time-start_time).total_seconds()//60))
+    next_date=s+timedelta(days=1)
+    print(next_date)
+    print('--------------------------')
+    count=1
+    for i in range(duration,int((end_time-start_time).total_seconds()//60)+duration,duration):
+        print(f'slot {count} : {start_time} - {start_time+timedelta(minutes=duration)}')
+        count+=1
+        start_time+=timedelta(minutes=duration)
+    print('----------------------------')
+    

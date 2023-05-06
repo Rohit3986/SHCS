@@ -10,6 +10,5 @@ urlpatterns = [
     path('profile/',views.profile),
     path('logout/',views.logout),
     path('register/',views.register),
-    path('s/',views.bc),
     path('select_doctors/',views.doctor)
 ]

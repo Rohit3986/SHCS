@@ -318,7 +318,7 @@
       <ul class="sidebar-nav" id="sidebar-nav">
   
         <li class="nav-item">
-          <a class="nav-link collapsed" href="dashboard.html">
+          <a class="nav-link collapsed" href="/dashboard/">
             <i class="bi bi-grid"></i>
             <span>Disease Predictor</span>
           </a>
@@ -359,20 +359,33 @@
           <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
             <li>
               <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Book Appointment</span></a>
-                  </li>
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
-                  
-                  </li>
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Appointments History</span></a>
-                  
-                  </li>
+                {% if user.user_type == 'Doctor' %}<li>
+                    <a href="/select_doctors/">
+                    <i class="bi bi-circle"></i><span>Create Appointment</span></a>
+                </li>
+                <li>
+                    <a href="#">
+                    <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
+                </li>
+                <li>
+                    <a href="#">
+                    <i class="bi bi-circle"></i><span>Check Schdules</span></a>
+                
+                </li>{% else %}<li>
+                    <a href="/select_doctors/">
+                    <i class="bi bi-circle"></i><span>Book Appointment</span></a>
+                </li>
+                <li>
+                    <a href="#">
+                    <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
+                
+                </li>
+                <li>
+                    <a href="#">
+                    <i class="bi bi-circle"></i><span>Appointments History</span></a>
+                
+                </li>{% endif %}  
+                
               </ul>
             
           </ul>
