@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Doctor Appointment Scheduler</title>
+	<style>
+		.container {
+			width: 600px;
+            height: 600px;
+			margin: 0 auto;
+			padding: 20px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            left: 20%;
+            top: 20%;
+            right:20%;
+            bottom: 20%;
+            }
+       
+
+		form label {
+			display: inline-block;
+			width: 100px;
+			margin-bottom: 10px;
+		}
+		form input {
+			padding: 5px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			margin-bottom: 10px;
+		}
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+		form button {
+            padding: 10px 20px;
+            display: block;
+            margin: 0 auto;
+            background-color: #4154f1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+	</style>
+	<script>
+		function scheduleAppointment() {
+			// Get form values
+			var patientName = document.getElementById("patient-name").value;
+			var appointmentDate = document.getElementById("appointment-date").value;
+			var appointmentTime = document.getElementById("appointment-time").value;
+            var emailID = document.getElementById("patient-email").value;
+
+			
+			// Show confirmation pop-up message
+			alert("Your meeting with patient " + patientName + " on " + appointmentDate + " at " + appointmentTime + "with email ID "+ emailID + " is scheduled!");
+
+			// Clear form values
+			document.getElementById("patient-name").value = "";
+			document.getElementById("appointment-date").value = "";
+			document.getElementById("appointment-time").value = "";
+            document.getElementById("patient-email").value = "";
+
+		}
+	</script>
+</head>
+<body>
+	<div class="container">
+		<header>
+			<h1>Doctor Appointment Scheduler</h1>
+		</header>
+		<main>
+			<h2>Make an Appointment</h2>
+			<form>
+                <label for="DoctorName">Doctors Name:</label>
+                <input type="text" id="DoctorName" name="DoctorName" value="Dr Jones"><br><br>
+                <label for="DoctorEmail">Doctors Email ID:</label>
+                <input type="text" id="DoctorEmail" name="DoctorEmail" value="jones123@gmail.com"><br><br>
+				<label for="patient-name">Patient Name:</label>
+				<input type="text" id="patient-name" required><br><br>
+                <label for="patient-email">Patient Email ID:</label>
+				<input type="text" id="patient-email" required><br><br>
+				<label for="appointment-date">Appointment Date:</label>
+				<input type="date" id="appointment-date" required><br><br>
+				<label for="appointment-time">Appointment Time:</label>
+				<input type="time" id="appointment-time" required><br><br>
+				<button type="button" onclick="scheduleAppointment()">Submit</button>
+			</form>
+		</main>
+	</div>
+</body>
+</html>

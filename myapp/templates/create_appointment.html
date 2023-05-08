@@ -7,6 +7,12 @@
     <title>Smart Health Consultancy Service</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <!-- Favicons -->
     <link href={% static "assets/img/favicon.png" %} rel="icon">
@@ -27,38 +33,54 @@
 
     <!-- Template Main CSS File -->
     <link href={% static "assets/css/style.css" %} rel="stylesheet">
+    <style>
+        .card {
+            margin-top: 30px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+        }
+        
+        .card-img-top {
+            width: 70%;
+            height: 70%;
+            object-fit: cover;
+            margin: 0 auto;
+            border-radius: 50%;
+        }
+        
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        
+        .card-text {
+            margin-top: 10px;
+        }
+        
+        .btn {
+            margin-top: 20px;
+        }
+        
+    </style>
     <script>
-      
-      const data = []
-      function addSymptom(symptom_id,symptom_name) {
-        console.log("symptom_id is "+symptom_id)
-        console.log("symptom_name is "+symptom_name)
-        const trNode = document.createElement('tr');
-        const td_id_Node = document.createElement('td');
-        const td_name_Node = document.createElement('td');
+        console.log('hy')
         
 
-        // Change the name parameter of the element
-        td_id_Node.setAttribute("class", "text-primary fw-bold");
-        td_id_Node.setAttribute("name", "symptoms_list");
-        td_id_Node.setAttribute("id", "symptoms_list")
-        td_id_Node.setAttribute("value", symptom_id);
-        console.log(td_id_Node)
-        td_id_Node.innerText = symptom_id
-        td_name_Node.innerText =symptom_name
-        trNode.appendChild(td_id_Node)
-        trNode.appendChild(td_name_Node)
-        var symptoms_form = document.getElementById("symptoms_form")
-        yoursymptom_tbody = document.getElementById('yoursymptom_tbody')
-        yoursymptom_tbody.appendChild(trNode)
-        const form_button =document.getElementById('frm_btn')
-        data.push(symptom_id)
-        form_button.setAttribute("value", JSON.stringify(data))
-        console.log(data)
-      }
-
-      
-  </script>
+        function myFunction(myList) {
+            console.log(myList)
+            var exampleModal = document.getElementById('exampleModalToggle')
+            console.log(exampleModal)
+            var dr_name = document.getElementById('dr_name')
+            var speciality = document.getElementById('speciality')
+            var exp = document.getElementById('exp')
+            dr_name.value = myList[0]
+            speciality.value = myList[1]
+            exp.value = myList[2]
+        }
+    </script>
     <!-- =======================================================
   * Template Name: NiceAdmin - v2.4.1
   * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
@@ -68,7 +90,10 @@
 </head>
 
 <body>
-
+    {% if is_created %}<script>
+        $(document).ready(function() {
+        $('#exampleModalToggle2').modal('show');
+    });</script>{% endif %}
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
 
@@ -315,291 +340,222 @@
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
 
-      <ul class="sidebar-nav" id="sidebar-nav">
-  
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="/dashboard/">
-            <i class="bi bi-grid"></i>
-            <span>Disease Predictor</span>
-          </a>
-        </li><!-- End Dashboard Nav -->
-  
-        <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-            <i class="bi bi-menu-button-wide"></i><span>Trackers</span><i class="bi bi-chevron-down ms-auto"></i>
-          </a>
-          <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-            <li>
-              <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Blood Pressure</span></a>
-                  
-                  </li>
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Sugar Level</span></a>
-                  
-                  </li>
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Heart Rate</span></a>
-                  
-                  </li>
-              </ul>
-            
-          </ul>
-        </li><!-- End Components Nav -->
-  
-        
-        <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#Appointments" data-bs-toggle="collapse" href="#">
-            <i class="bi bi-menu-button-wide"></i><span>Appointments</span><i class="bi bi-chevron-down ms-auto"></i>
-          </a>
-          <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-            <li>
-              <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                {% if user.user_type == 'doctor' %}<li>
-                    <a href="/create_appointment/">
-                    <i class="bi bi-circle"></i><span>Create Appointment</span></a>
-                </li>
-                <li>
-                  <a href="#">
-                  <i class="bi bi-circle"></i><span>Check Schdules</span></a>
-              
-              </li>
-                <li>
-                    <a href="#">
-                    <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
-                </li>
-                {% else %}
-                <li>
-                    <a href="/select_doctors/">
-                    <i class="bi bi-circle"></i><span>Book Appointment</span></a>
-                </li>
-                <li>
-                    <a href="#">
-                    <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
-                </li>
-                <li>
-                    <a href="#">
-                    <i class="bi bi-circle"></i><span>Appointments History</span></a>
-                
-                </li>{% endif %}  
-                
-              </ul>
-            
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#Documents" data-bs-toggle="collapse" href="#">
-            <i class="bi bi-menu-button-wide"></i><span>Documents</span><i class="bi bi-chevron-down ms-auto"></i>
-          </a>
-          <ul id="Documents" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-            <li>
-              <ul id="Documents" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Medical Reports</span></a>
-                  </li>
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Goverment Issued Documents</span></a>
-                  
-                  </li>
-              </ul>
-            
-          </ul>
-        </li>
-        <li class="nav-heading">Pages</li>
-  
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="users-profile.html">
-            <i class="bi bi-person"></i>
-            <span>Profile</span>
-          </a>
-        </li><!-- End Profile Page Nav -->
-  
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="pages-faq.html">
-            <i class="bi bi-question-circle"></i>
-            <span>F.A.Q</span>
-          </a>
-        </li><!-- End F.A.Q Page Nav -->
-  
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="pages-contact.html">
-            <i class="bi bi-envelope"></i>
-            <span>Contact</span>
-          </a>
-        </li><!-- End Contact Page Nav -->
-  
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="pages-register.html">
-            <i class="bi bi-card-list"></i>
-            <span>Register</span>
-          </a>
-        </li><!-- End Register Page Nav -->
-  
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="/logout/">
-            <i class="bi bi-box-arrow-in-right"></i>
-            <span>Logout</span>
-          </a>
-        </li><!-- End Login Page Nav -->
-  
-      </ul>
-  
-    </aside>
-  
-    <!-- End Sidebar-->
+        <ul class="sidebar-nav" id="sidebar-nav">
 
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/dashboard/">
+                    <i class="bi bi-grid"></i>
+                    <span>Disease Predictor</span>
+                </a>
+            </li>
+            <!-- End Dashboard Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Trackers</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="#">
+                                    <i class="bi bi-circle"></i><span>Blood Pressure</span></a>
+
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="bi bi-circle"></i><span>Sugar Level</span></a>
+
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="bi bi-circle"></i><span>Heart Rate</span></a>
+
+                            </li>
+                        </ul>
+
+                </ul>
+                </li>
+                <!-- End Components Nav -->
+
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#Appointments" data-bs-toggle="collapse" href="#">
+                        <i class="bi bi-menu-button-wide"></i><span>Appointments</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li>
+                            <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                {% if user.user_type == 'doctor' %}
+                                <li>
+                                    <a href="/create_appointment/">
+                                        <i class="bi bi-circle"></i><span>Create Appointment</span></a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="bi bi-circle"></i><span>Check Schdules</span></a>
+
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
+                                </li>
+                                {% else %}
+                                <li>
+                                    <a href="/select_doctors/">
+                                        <i class="bi bi-circle"></i><span>Book Appointment</span></a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="bi bi-circle"></i><span>Appointments History</span></a>
+
+                                </li>{% endif %}
+
+                            </ul>
+
+                    </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#Documents" data-bs-toggle="collapse" href="#">
+                            <i class="bi bi-menu-button-wide"></i><span>Documents</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="Documents" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <ul id="Documents" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a href="#">
+                                            <i class="bi bi-circle"></i><span>Medical Reports</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="bi bi-circle"></i><span>Goverment Issued Documents</span></a>
+
+                                    </li>
+                                </ul>
+
+                        </ul>
+                        </li>
+                        <li class="nav-heading">Pages</li>
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="users-profile.html">
+                                <i class="bi bi-person"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                        <!-- End Profile Page Nav -->
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="pages-faq.html">
+                                <i class="bi bi-question-circle"></i>
+                                <span>F.A.Q</span>
+                            </a>
+                        </li>
+                        <!-- End F.A.Q Page Nav -->
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="pages-contact.html">
+                                <i class="bi bi-envelope"></i>
+                                <span>Contact</span>
+                            </a>
+                        </li>
+                        <!-- End Contact Page Nav -->
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="pages-register.html">
+                                <i class="bi bi-card-list"></i>
+                                <span>Register</span>
+                            </a>
+                        </li>
+                        <!-- End Register Page Nav -->
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="/logout/">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                        <!-- End Login Page Nav -->
+
+        </ul>
+
+    </aside>
     <main id="main" class="main">
 
-      <div class="pagetitle">
-        <h1>Dashboard</h1>
-        <nav>
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard</li>
-          </ol>
-        </nav>
-      </div><!-- End Page Title -->
-  
-      <section class="section dashboard">
-        <div class="row">
-          <!-- Left side columns -->
-          <div class="col-lg-8">
-            <div class="row">
-              
-              
-              <!-- End Sales Card -->
-  
-              <!-- Revenue Card -->
-              <!-- End Revenue Card -->
-  
-              <!-- Customers Card -->
-              {% if disease_list %}{% for disease in disease_list %}<div class="col-xxl-4 col-xl-12">
-                <div class="card info-card customers-card">
-                  <div class="card-body">
-                    <h5 class="card-title">Ranking <span>| {{disease.ranking}}</span></h5>
-  
-                    <div class="d-flex align-items-center">
-                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="bi bi-people"></i>
-                      </div>
-                      <div class="ps-3">
-                        <h6>{{disease.name}}</h6>
-                        <span class="text-danger small pt-1 fw-bold">{{disease.accuracy}}%</span> <span class="text-muted small pt-2 ps-1">accuracy</span>
-                      </div>
-                    </div>
-  
-                  </div>
-                </div>
-  
-              </div>{% endfor %}{% else %}<div class="d-flex align-items-center">
-                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                  <i class="bi bi-people"></i>
-                </div>
-                <div class="ps-3">
-                  <h6>No Data Available</h6>
-                </div>
-              </div>{% endif %}
-              
-              <!-- End Customers Card -->
-  
-              <!-- Reports -->
-              <div class="col-12">
-                <div class="card">
-  
-                  <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                      <li class="dropdown-header text-start">
-                        <h6>Filter</h6>
-                      </li>
-  
-                      <li><a class="dropdown-item" href="#">Today</a></li>
-                      <li><a class="dropdown-item" href="#">This Month</a></li>
-                      <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                  </div>
-  
-                  <div class="card-body">
-                    <h5 class="card-title">Your Symptoms</span></h5>
-  
-                    <!-- Line Chart -->
-                    <div id="symptoms_form"><form method="POST" action="/dashboard/" style="display:block">
-                      {% csrf_token %}
-                      <table class="table table-borderless">
-                        <thead>
-                          <tr name="symptoms_list" value="hii">
-                            <th scope="col">Symptom Code</th>
-                            <th scope="col">Symptom Name</th>
-                          </tr>
-                        </thead>
-                        <tbody id="yoursymptom_tbody">
-                                
-                        </tbody>
-                      </table>
-                      <button type="submit" id="frm_btn" name="frm_btn">submit</button>
-                    </form>
-                      </div>
-  
-                    
-                    <!-- End Line Chart -->
-  
-                  </div>
-  
-                </div>
-              </div><!-- End Reports -->
-  
-              <!-- Recent Sales -->
-              <!-- End Recent Sales -->
-  
-              <!-- Top Selling -->
-              <div class="col-12">
-                <div class="card top-selling overflow-auto">
-  
-                  <div class="card-body pb-0">
-                    <h5 class="card-title">Click "Add" To Select Symptoms</span></h5>
-  
-                    <table class="table table-borderless">
-                      <thead>
-                        <tr>
-                          <th scope="col">Symptom Code</th>
-                          <th scope="col">Symptom Name</th>
-                          <th scope="col">Add Symptom</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for data in symptoms %}
-                        <tr id="{{data.id}}">
-                          <td><a href="#" class="text-primary fw-bold">{{data.id}}</a></td>
-                          <td>{{data.name}}</td>
-                          <td class="fw-bold"><button type="button" class="btn btn-primary btn-sm" onclick="addSymptom('{{data.id}}','{{data.name}}')">Add</button></td>
-                        </tr>{% endfor %}
-                        
-                        
-                      </tbody>
-                    </table>
-  
-                  </div>
-  
-                </div>
-              </div><!-- End Top Selling -->
-  
-            </div>
-          </div><!-- End Left side columns -->
-  
-          <!-- Right side columns -->
-          <!-- End Right side columns -->
-  
+        <div class="pagetitle">
+            <h1>Dashboard</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">Select Doctors</li>
+                </ol>
+            </nav>
         </div>
-      </section>
-  
-    </main><!-- End #main -->
-  
+        <!-- End Page Title -->
+        <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: rgb(100, 100, 200);color: aliceblue;">
+                        <h5 class="modal-title" id="exampleModalToggleLabel2">Slots Created</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Congratulations!! Appointment Slots are created sucessfully.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <header style="background-color: #464e93;color: whitesmoke;text-shadow: 3px;">
+                    <h1>Create Your Appontment</h1>
+                </header>
+
+                <form class="needs-validation" method="post" action="/create_appointment/">
+                    {% csrf_token %}
+                    <div class="row">
+                        <h5>Personal Info :</h5>
+                        <p style="color: rgb(143, 132, 132);">your name will be display to patients as given in form and meeting links will be shared to above mail</p>
+                        <hr>
+                        <div class=" col "><label for="DoctorName ">Doctors Name:</label>
+                            <input type="text " id="DoctorName " name="DoctorName " value="{{user.first_name}} {{user.last_name}}" disabled><br><br></div>
+                        <div class="col "><label for="DoctorEmail ">Doctors Email ID:</label>
+                            <input type="text " id="DoctorEmail " name="DoctorEmail " value="{{user.email}}" disabled><br><br></div>
+                    </div><br><br>
+                    <div class="row ">
+                        <h5>Date & Time:</h5>
+                        <p style="color: rgb(143, 132, 132); ">you can choose date and time for creating your appointment , don't add anything in end date if you are creating appointment for single day</p>
+                        <hr>
+                        <div class="col"><label for="start_date">Start Date:</label>
+                            <input type="date" id="start_date" name="start_date" required><br><br></div>
+                        <div class="col "><label for="end_date ">End Date:</label>
+                            <input type="date" id="end_date" name="end_date" required><br><br></div>
+                    </div>
+                    <div class="row ">
+                        <div class="col"><label for="start_time">Start Time:</label>
+                            <input type="time" id="start_time" name="start_time" required><br><br></div>
+                        <div class="col"><label for="end_time">End Time:</label>
+                            <input type="time" id="end_time" name="end_time" required><br><br></div>
+                    </div>
+                    <button type="submit">Create Appointment</button>
+                </form>
+            </div>
+        </div>
+
+
+
+    </main>
+    <!-- End #main -->
+
     <!-- End #main -->
 
     <!-- ======= Footer ======= -->
@@ -620,6 +576,10 @@
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src={% static "assets/vendor/apexcharts/apexcharts.min.js" %}></script>
     <script src={% static "assets/vendor/bootstrap/js/bootstrap.bundle.min.js" %}></script>
     <script src={% static "assets/vendor/chart.js/chart.min.js" %}></script>

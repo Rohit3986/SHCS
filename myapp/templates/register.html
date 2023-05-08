@@ -57,19 +57,33 @@
                 console.log("passowrds are matched")
                 document.getElementById("mmmm").innerHTML = "";
             }
-            return pass1.length>=6 && pass1==pass2 
+            return pass1.length >= 6 && pass1 == pass2
         }
 
         function final_validation() {
-            if (!passwordmatch()){
+            if (!passwordmatch()) {
                 alert('Please enter a valid password')
             }
-            if (!checkPhoneNumber()){
+            if (!checkPhoneNumber()) {
                 alert('Please enter a valid phone number')
             }
-            
-            console.log("inside final validation"+a)
 
+            console.log("inside final validation" + a)
+
+        }
+
+        function doctor_choices() {
+            user_type = document.getElementById('user_type')
+            user_type = user_type.value
+            if (user_type != 'doctor') {
+                doctor_classess = document.getElementById('doctor')
+                doctor_classess.style.display = 'none'
+                console.log("user_type is " + doctor_classess)
+            } else {
+                doctor_classess = document.getElementById('doctor')
+                doctor_classess.style.display = 'block'
+                console.log("user_type is " + doctor_classess)
+            }
         }
     </script>
     <!-- =======================================================
@@ -133,18 +147,38 @@
                                         <label for="gender" class="col-sm-5 col-form-label">Gender</label>
                                         <div class="col-sm-5">
                                             <select name="gender" id="gender" required class="form-select" aria-label="Default select example">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                      </select>
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                            </select>
                                         </div>
                                         <label for="user_type" class="col-sm-5 col-form-label">User Type</label>
                                         <div class="col-sm-5">
-                                            <select name="user_type" id="user_type" required class="form-select" aria-label="Default select example">
-                        <option value="doctor">Doctor</option>
-                        <option value="patient">Patient</option>
-                        <option value="handler_team">App Handler Team</option>
-                      </select>
+                                            <select name="user_type" id="user_type" required class="form-select" aria-label="Default select example" onchange="doctor_choices()">
+                                                <option value="doctor">Doctor</option>
+                                                <option selected value="patient">Patient</option>
+                                                <option value="handler_team">App Handler Team</option>
+                                            </select>
                                         </div>
+                                        <div id="doctor" style="display: none;"><label for="Specialization" class="col-sm-5 col-form-label">Specialization</label>
+                                            <div class="col-m-5">
+                                                <select name="specialization" id="specialization" required class="form-select" aria-label="Default select example" onchange="doctor_choices()">
+                                                    <option value="General Practitioner">General Practitioner</option>
+                                                    <option selected value="Pediatrician">Pediatrician</option>
+                                                    <option value="Cardiologist">Cardiologist</option>
+                                                    <option value="Neurologist">Neurologist</option>
+                                                    <option value="Gynecologist">Gynecologist</option>
+                                                    <option value="Psychiatrist">Psychiatrist</option>
+                                                    <option value="Dermatologist">Dermatologist</option>
+                                                </select>
+                                            </div>
+                                            <label for="experience" class="col-sm-5 col-form-label doctor">Experience</label>
+                                            <div class="col-m-5">
+                                                <input type="number" name="experience" class="form-control" id="experience" required>
+                                            </div>
+                                        </div>
+
+
+
                                         <div class="col-12">
                                             <label for="password" class="form-label">Password</label>
                                             <input type="password" name="password" class="form-control" id="password" required>
@@ -160,8 +194,9 @@
                                         <div class="col-12">
                                             <div class="form-check">
                                                 <input class="form-check-input" name="terms" type="checkbox" value="" id="acceptTerms" required>
-                                                <label class="form-check-label" for="acceptTerms">I agree and accept the <a href="#">terms and
-                            conditions</a></label>
+                                                <label class="form-check-label" for="acceptTerms">I agree and accept the
+                                                    <a href="#">terms and
+                                                        conditions</a></label>
                                                 <div class="invalid-feedback">You must agree before submitting.</div>
                                             </div>
                                         </div>
@@ -195,7 +230,7 @@
     <!-- End #main -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-      class="bi bi-arrow-up-short"></i></a>
+            class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
     <script src={% static "assets/vendor/apexcharts/apexcharts.min.js" %}></script>

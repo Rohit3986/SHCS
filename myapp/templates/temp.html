@@ -12,6 +12,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <!-- Custom CSS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <!-- Favicons -->
     <link href={% static "assets/img/favicon.png" %} rel="icon">
     <link href={% static "assets/img/apple-touch-icon.png" %} rel="apple-touch-icon">
@@ -63,36 +65,19 @@
         }
     </style>
     <script>
-        function booking(symptom_id, symptom_name) {
-            alert("Your Appointment is booked!!")
-        }
-        const data = []
+        console.log('hy')
+        
 
-        function addSymptom(symptom_id, symptom_name) {
-            console.log("symptom_id is " + symptom_id)
-            console.log("symptom_name is " + symptom_name)
-            const trNode = document.createElement('tr');
-            const td_id_Node = document.createElement('td');
-            const td_name_Node = document.createElement('td');
-
-
-            // Change the name parameter of the element
-            td_id_Node.setAttribute("class", "text-primary fw-bold");
-            td_id_Node.setAttribute("name", "symptoms_list");
-            td_id_Node.setAttribute("id", "symptoms_list")
-            td_id_Node.setAttribute("value", symptom_id);
-            console.log(td_id_Node)
-            td_id_Node.innerText = symptom_id
-            td_name_Node.innerText = symptom_name
-            trNode.appendChild(td_id_Node)
-            trNode.appendChild(td_name_Node)
-            var symptoms_form = document.getElementById("symptoms_form")
-            yoursymptom_tbody = document.getElementById('yoursymptom_tbody')
-            yoursymptom_tbody.appendChild(trNode)
-            const form_button = document.getElementById('frm_btn')
-            data.push(symptom_id)
-            form_button.setAttribute("value", JSON.stringify(data))
-            console.log(data)
+        function myFunction(myList) {
+            console.log(myList)
+            var exampleModal = document.getElementById('exampleModalToggle')
+            console.log(exampleModal)
+            var dr_name = document.getElementById('dr_name')
+            var speciality = document.getElementById('speciality')
+            var exp = document.getElementById('exp')
+            dr_name.value = myList[0]
+            speciality.value = myList[1]
+            exp.value = myList[2]
         }
     </script>
     <!-- =======================================================
@@ -104,7 +89,10 @@
 </head>
 
 <body>
-
+    {% if is_created %}<script>
+        $(document).ready(function() {
+        $('#exampleModalToggle').modal('show');
+    });</script>{% endif %}
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
 
@@ -354,7 +342,7 @@
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="dashboard.html">
+                <a class="nav-link collapsed" href="/dashboard/">
                     <i class="bi bi-grid"></i>
                     <span>Disease Predictor</span>
                 </a>
@@ -397,20 +385,35 @@
                     <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                         <li>
                             <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                {% if user.user_type == 'doctor' %}
+                                <li>
+                                    <a href="/create_appointment/">
+                                        <i class="bi bi-circle"></i><span>Create Appointment</span></a>
+                                </li>
                                 <li>
                                     <a href="#">
+                                        <i class="bi bi-circle"></i><span>Check Schdules</span></a>
+
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
+                                </li>
+                                {% else %}
+                                <li>
+                                    <a href="/select_doctors/">
                                         <i class="bi bi-circle"></i><span>Book Appointment</span></a>
                                 </li>
                                 <li>
                                     <a href="#">
                                         <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
-
                                 </li>
                                 <li>
                                     <a href="#">
                                         <i class="bi bi-circle"></i><span>Appointments History</span></a>
 
-                                </li>
+                                </li>{% endif %}
+
                             </ul>
 
                     </ul>
@@ -480,8 +483,6 @@
         </ul>
 
     </aside>
-    <!-- End Sidebar-->
-
     <main id="main" class="main">
 
         <div class="pagetitle">
@@ -493,20 +494,7 @@
                 </ol>
             </nav>
         </div>
-        <div class="category-buttons">
-            <button onclick="selectCategory('cardiology')">Cardiology</button>
-            <button onclick="selectCategory('dermatology')">Dermatology</button>
-            <button onclick="selectCategory('gynecology')">Gynecology</button>
-            <button onclick="selectCategory('neurology')">Neurology</button>
-        </div>
         <!-- End Page Title -->
-        <div class="input-container">
-            <input type="text" name="input1" disabled>
-            <input type="text" name="input2">
-            <input type="text" name="input3">
-            <input type="text" name="input4" disabled>
-        </div>
-
         <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -515,41 +503,71 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form class="row g-3">
 
-                            <div class="mb-3 row">
-                                <label for="staticEmail" class="col-sm-2 col-form-label">Doctor Name</label>
-                                <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="Dr. Larry Fisher">
+                        <form style="width: 1000px;" class="row row-cols-2" method="post" action="/select_doctors/">
+                            {% csrf_token %}
+                            <div class="col">
+                                <div class="mb-3 row">
+                                    <label for="staticEmail" class="col-sm-2 col-form-label">Doctor Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control-plaintext" id="dr_name" value="Dr. Larry Fisher">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="staticEmail" class="col-sm-2 col-form-label">Speciality</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control-plaintext" id="speciality" value="Phychiatrist">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label for="staticEmail" class="col-sm-2 col-form-label">Exp</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control-plaintext" id="exp" value="4+ years">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label for="staticEmail" class="col-sm-2 col-form-label">Fees</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="12$">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label for="date" class="col-sm-2 col-form-label" required>Select Date</label>
+                                    <div class="col-sm-5">
+                                        <select id="date" name="date" class="form-select" required>
+                                          <option>Choose...</option>
+                                          <option>1 May 2023</option>
+                                          <option>2 May 2023</option>
+                                          <option>3 May 2023</option>
+                                          <option>4 May 2023</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label for="staticEmail" class="col-sm-2 col-form-label">Select Time</label>
+                                    <div class="col-sm-5">
+                                        <select id="inputState" class="form-select" required>
+                                          <option selected>Choose...</option>
+                                          <option>09:00-09:30 AM</option>
+                                          <option>10:00-10:30 AM</option>
+                                          <option>10:30-11:00 AM</option>
+                                          <option>11:00-11:30 AM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modal-footer" style="width: 400px;justify-content: center;">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" type="submit">Schedule Call</button>
                                 </div>
                             </div>
 
-                            <div class="mb-3 row">
-                                <label for="staticEmail" class="col-sm-2 col-form-label">Speciality</label>
-                                <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="Phychiatrist">
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="staticEmail" class="col-sm-2 col-form-label">Exp</label>
-                                <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="4+ years">
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="staticEmail" class="col-sm-2 col-form-label">Fees</label>
-                                <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="12$">
-                                </div>
-                            </div>
                         </form>
+
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Schedule Call</button>
-                    </div>
+
                 </div>
-                
+
             </div>
         </div>
         <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
@@ -569,27 +587,41 @@
             </div>
         </div>
 
-        
+
         <div class="album py-5 bg-light">
             <div class="container">
+                <header style="background-color: #464e93;color: whitesmoke;text-shadow: 3px;">
+                    <h1>Create Your Appontment</h1>
+                </header>
 
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    <!-- loop lagana hai -->
-                    {% for doctor in doctors %}
-                    <div class="col">
-                        <div class="card">
-                            {% if doctor.gender == 'Male' %}<img class="card-img-top" src="https://www.iconbunny.com/icons/media/catalog/product/2/1/2131.12-doctor-icon-iconbunny.jpg" alt="Doctor Image"> {% else %}<img class="card-img-top" src="https://cdn-icons-png.flaticon.com/512/1869/1869354.png"
-                                alt="Doctor Image"> {% endif %}
-                            <h2 class="card-title">Dr. {{doctor.first_name}} {{doctor.last_name}}</h2>
-                            <p class="card-text">Specialty: {{doctor.speciality}}</p>
-                            <p class="card-text">Experience: {{doctor.experience}}+ years</p>
-                            <p class="card-text">Location: {{doctor.address}}</p>
-                            <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Book Appointment</a>
-                        </div>
-                    </div>{% endfor %}
-
-
-                </div>
+                <form class="needs-validation" method="post" action="/create_appointment/">
+                    {% csrf_token %}
+                    <div class="row">
+                        <h5>Personal Info :</h5>
+                        <p style="color: rgb(143, 132, 132);">your name will be display to patients as given in form and meeting links will be shared to above mail</p>
+                        <hr>
+                        <div class=" col "><label for="DoctorName ">Doctors Name:</label>
+                            <input type="text " id="DoctorName " name="DoctorName " value="{{user.first_name}} {{user.last_name}}" disabled><br><br></div>
+                        <div class="col "><label for="DoctorEmail ">Doctors Email ID:</label>
+                            <input type="text " id="DoctorEmail " name="DoctorEmail " value="{{user.email}}" disabled><br><br></div>
+                    </div><br><br>
+                    <div class="row ">
+                        <h5>Date & Time:</h5>
+                        <p style="color: rgb(143, 132, 132); ">you can choose date and time for creating your appointment , don't add anything in end date if you are creating appointment for single day</p>
+                        <hr>
+                        <div class="col"><label for="start_date">Start Date:</label>
+                            <input type="date" id="start_date" name="start_date" required><br><br></div>
+                        <div class="col "><label for="end_date ">End Date:</label>
+                            <input type="date" id="end_date" name="end_date" required><br><br></div>
+                    </div>
+                    <div class="row ">
+                        <div class="col"><label for="start_time">Start Time:</label>
+                            <input type="time" id="start_time" name="start_time" required><br><br></div>
+                        <div class="col"><label for="end_time">End Time:</label>
+                            <input type="time" id="end_time" name="end_time" required><br><br></div>
+                    </div>
+                    <button type="submit">Create Appointment</button>
+                </form>
             </div>
         </div>
 
@@ -633,30 +665,6 @@
 
     <!-- Template Main JS File -->
     <script src={% static "assets/js/main.js" %}></script>
-
-</body>
-
-</html>
-
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Doctor Profile Card</title>
-
-
-</head>
-
-<body>
-
-
-
-
-
-</body>
-
-</html>
-
 
 </body>
 

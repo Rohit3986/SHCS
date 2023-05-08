@@ -10,5 +10,6 @@ urlpatterns = [
     path('profile/',views.profile),
     path('logout/',views.logout),
     path('register/',views.register),
-    path('select_doctors/',views.doctor)
+    path('select_doctors/',views.doctor),
+    path('create_appointment/',views.create_appointments)
 ]

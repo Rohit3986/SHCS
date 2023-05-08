@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import LoginForm
 from .models import *
 import requests
+from django.contrib.auth.hashers import make_password, check_password
 import json
 from faker import Faker
 import random
@@ -66,8 +67,14 @@ def register(request):
         user_type = request.POST['user_type']
         print(gender,user_type)
         password = request.POST["password"]
-        password1 = request.POST["password1"]
-        s=User.objects.create_user(first_name=fname,last_name=lname,phone_number=phone,gender=gender,email=email,user_type=user_type,password=password)
+        hashed_pwd = make_password(password)
+        if user_type=='doctor':
+            experience = request.POST["experience"]
+            speciality = request.POST["specialization"]
+            print(fname,lname,email,phone,speciality,experience,gender)
+            Doctor.objects.create(first_name=fname,last_name=lname,phone_number=phone,gender=gender,email=email,user_type=user_type,password=hashed_pwd,experience=experience,speciality=speciality)
+        else:
+            s=User.objects.create_user(first_name=fname,last_name=lname,phone_number=phone,gender=gender,email=email,user_type=user_type,password=password)
         return HttpResponseRedirect("/")
     else:
         return render(request,"register.html")
@@ -154,3 +161,65 @@ def generate_appointments(start_date=None,appointment_days=None,start_time=None,
         start_time+=timedelta(minutes=duration)
     print('----------------------------')
     
+
+def create_appointments(request):
+    s={'is_created':False}
+    if request.method=='POST':
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+        start_time = request.POST['start_time']
+        end_time = request.POST['end_time']
+        appointment_data=create_appointment_slots(start_date=start_date,end_date=end_date,start_time=start_time,end_time=end_time,doctor=request.user.id)
+        print(appointment_data)
+        #Appointment.objects.bulk_create(appointment_data)
+        s={'is_created':True}
+    return render(request,'create_appointment.html',context=s)
+
+def split_time(start_time=None, end_time=None, slot_duration=30, curr_date=None,doctor=None):
+    
+
+    # convert start and end times to datetime objects
+    start_time = timedelta(hours=int(start_time[:2]),minutes=int(end_time[-2:]))
+    end_time = timedelta(hours=int(end_time[:2]),minutes=int(end_time[-2:]))
+
+    # calculate the total number of minutes between start and end time
+    total_minutes = int((end_time - start_time).total_seconds() / 60)
+
+    # calculate the number of slots
+    num_slots = int(total_minutes / slot_duration)
+    
+    # initialize the list of time slots
+
+    s=[]
+    # iterate through the slots and calculate the start and end time of each slot
+    for i in range(num_slots):
+        start_time = datetime(2023, 5, 6, 9, 0, 0)
+        slot_start = start_time + timedelta(minutes=i * slot_duration)
+        slot_end = slot_start + timedelta(minutes=slot_duration)
+        start_time = datetime(2023, 5, 6, 0, 0, 0)
+        # format the start and end times in am-pm format
+        slot_start_str = slot_start.time().strftime('%I:%M %p')
+        slot_end_str = slot_end.time().strftime('%I:%M %p')
+        appointment_dict = {}
+        appointment_dict['doctor']=doctor
+        appointment_dict['appointment_date']=curr_date
+        appointment_dict['start_time']=slot_start_str
+        appointment_dict['end_time']=slot_end_str
+        appointment_dict['is_available']=True
+        s.append(appointment_dict)
+        # add the time slot to the list of slots
+        
+
+    return s
+
+def create_appointment_slots(start_date,end_date,start_time,end_time,doctor):
+    start_date=datetime(day=int(start_date[-2:]),month=int(start_date[5:7]),year=int(start_date[:4]))
+    print(start_date.strftime('%Y-%m-%d : %A'))
+    end_date=datetime(day=int(end_date[-2:]),month=int(end_date[5:7]),year=int(end_date[:4]))
+    date_diff=int((end_date-start_date).days)
+    k=[]
+    for i in range(date_diff+1):
+        curr_date = start_date+timedelta(days=i)
+        curr_date = curr_date.strftime('%Y-%m-%d : %A')
+        k.extend(split_time(start_time=start_time,end_time=end_time,curr_date=curr_date,doctor=doctor))
+    return k

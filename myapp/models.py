@@ -25,7 +25,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name,last_name,phone_number,email, user_type, gender,password=None, password2=None):
+    def create_superuser(self, email, user_type, gender,first_name,last_name,phone_number,password=None, password2=None):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
@@ -49,15 +49,15 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=25,blank=True)
     phone_number = models.CharField(max_length=14,blank=True)
     email = models.EmailField(verbose_name='Email',max_length=255,unique=True,blank=True)
-    gender = models.CharField(choices=(('Male','Male'),('Female','Female')),max_length=10,blank=True)
-    user_type = models.CharField(choices=(('Doctor','Doctor'),('Patient','Patient'),('Handler_Team','Handler_Team')),default="Patient",max_length=17,blank=True)
+    gender = models.CharField(choices=(('male','male'),('female','female')),max_length=10,blank=True)
+    user_type = models.CharField(choices=(('doctor','doctor'),('patient','patient'),('handler_team','handler_team')),default="patient",max_length=17,blank=True)
     address = models.TextField(max_length=200,null=True,blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['gender','user_type']
+    REQUIRED_FIELDS = ['first_name','last_name','phone_number','gender','user_type']
     
 
     def __str__(self):
@@ -89,9 +89,12 @@ class Doctor(User):
     
 class Appointment(models.Model):
     doctor = models.ForeignKey(to=Doctor,on_delete=models.PROTECT,related_name='doctor')
-    appointment_date = models.DateField()
-    appointment_time = models.CharField(max_length=20)
-    booked_by = models.ForeignKey(to=User,on_delete=models.PROTECT,related_name='patient')
-    is_available = models.BooleanField()
+    appointment_date = models.CharField(max_length=30)
+    start_time = models.CharField(max_length=20,default=None)
+    end_time = models.CharField(max_length=20,default=None)
+    appointment_status = models.CharField(choices=(('available','available'),('booked','booked'),('cancelled','cancelled')),default="available",max_length=17,blank=True)
+    booked_by = models.ForeignKey(to=User,on_delete=models.PROTECT,related_name='patient',null=True,blank=True)
+    cancelled_by = models.CharField(choices=(('doctor','doctor'),('patient','patient')),max_length=15,null=True,blank=True)
+    is_available = models.BooleanField(default=True)
     booked_on = models.DateTimeField(auto_now_add=True)
     

@@ -377,26 +377,27 @@
             <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
               <li>
                 <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                  {% if user.user_type == 'Doctor' %}<li>
-                      <a href="/select_doctors/">
+                  {% if user.user_type == 'doctor' %}<li>
+                      <a href="/create_appointment/">
                       <i class="bi bi-circle"></i><span>Create Appointment</span></a>
                   </li>
+                  <li>
+                    <a href="#">
+                    <i class="bi bi-circle"></i><span>Check Schdules</span></a>
+                
+                </li>
                   <li>
                       <a href="#">
                       <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
                   </li>
+                  {% else %}
                   <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Check Schdules</span></a>
-                  
-                  </li>{% else %}<li>
                       <a href="/select_doctors/">
                       <i class="bi bi-circle"></i><span>Book Appointment</span></a>
                   </li>
                   <li>
                       <a href="#">
                       <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
-                  
                   </li>
                   <li>
                       <a href="#">
@@ -468,8 +469,6 @@
         </ul>
     
       </aside>
-    <!-- End Sidebar-->
-
     <main id="main" class="main">
 
         <div class="pagetitle">
@@ -583,7 +582,7 @@
                     {% for doctor in doctors %}
                     <div class="col">
                         <div class="card">
-                            {% if doctor.gender == 'Male' %}<img class="card-img-top" src="https://www.iconbunny.com/icons/media/catalog/product/2/1/2131.12-doctor-icon-iconbunny.jpg" alt="Doctor Image"> {% else %}<img class="card-img-top" src="https://cdn-icons-png.flaticon.com/512/1869/1869354.png"
+                            {% if doctor.gender == 'male' %}<img class="card-img-top" src="https://www.iconbunny.com/icons/media/catalog/product/2/1/2131.12-doctor-icon-iconbunny.jpg" alt="Doctor Image"> {% else %}<img class="card-img-top" src="https://cdn-icons-png.flaticon.com/512/1869/1869354.png"
                                 alt="Doctor Image"> {% endif %}
                             <h2 class="card-title">Dr. {{doctor.first_name}} {{doctor.last_name}}</h2>
                             <p class="card-text">Specialty: {{doctor.speciality}}</p>
