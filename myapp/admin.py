@@ -30,3 +30,8 @@ class SymptomAdmin(admin.ModelAdmin):
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
     list_display = ['id','first_name','last_name','gender','experience','speciality']
+
+@admin.register(Appointment)
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ['id','doctor','appointment_date','start_time','end_time','appointment_status','booked_by','cancelled_by','is_available','booked_on']
+    

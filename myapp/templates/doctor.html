@@ -75,6 +75,22 @@
             dr_name.value = myList[0]
             speciality.value = myList[1]
             exp.value = myList[2]
+            appointment_data = JSON.parse(myList[3])
+            console.log(appointment_data)
+            let myContainer = document.getElementById('myContainer')
+            appointment_data.forEach((obj) => {
+                let btn = document.createElement("button");
+
+                let text = document.createTextNode(obj.fields.appointment_date + '<br>');
+                btn.innerHTML = obj.fields.appointment_date + '<br>';
+                btn.classList.add("btn", "btn-primary");
+                btn.style.marginLeft = '5px';
+                btn.style.backgroundColor = 'rgb(93, 159, 189)'
+                let text1 = document.createTextNode(obj.fields.start_time + ' - ' + obj.fields.end_time);
+                btn.appendChild(text1);
+                myContainer.appendChild(btn);
+            });
+
         }
     </script>
     <!-- =======================================================
@@ -334,141 +350,149 @@
     <aside id="sidebar" class="sidebar">
 
         <ul class="sidebar-nav" id="sidebar-nav">
-    
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="/dashboard/">
-              <i class="bi bi-grid"></i>
-              <span>Disease Predictor</span>
-            </a>
-          </li><!-- End Dashboard Nav -->
-    
-          <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-              <i class="bi bi-menu-button-wide"></i><span>Trackers</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-              <li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/dashboard/">
+                    <i class="bi bi-grid"></i>
+                    <span>Disease Predictor</span>
+                </a>
+            </li>
+            <!-- End Dashboard Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Trackers</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
                 <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="#">
-                        <i class="bi bi-circle"></i><span>Blood Pressure</span></a>
-                    
-                    </li>
-                    <li>
-                        <a href="#">
-                        <i class="bi bi-circle"></i><span>Sugar Level</span></a>
-                    
-                    </li>
-                    <li>
-                        <a href="#">
-                        <i class="bi bi-circle"></i><span>Heart Rate</span></a>
-                    
-                    </li>
+                        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a href="#">
+                                    <i class="bi bi-circle"></i><span>Blood Pressure</span></a>
+
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="bi bi-circle"></i><span>Sugar Level</span></a>
+
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="bi bi-circle"></i><span>Heart Rate</span></a>
+
+                            </li>
+                        </ul>
+
                 </ul>
-              
-            </ul>
-          </li><!-- End Components Nav -->
-    
-          
-          <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#Appointments" data-bs-toggle="collapse" href="#">
-              <i class="bi bi-menu-button-wide"></i><span>Appointments</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-              <li>
-                <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                  {% if user.user_type == 'doctor' %}<li>
-                      <a href="/create_appointment/">
-                      <i class="bi bi-circle"></i><span>Create Appointment</span></a>
-                  </li>
-                  <li>
-                    <a href="#">
-                    <i class="bi bi-circle"></i><span>Check Schdules</span></a>
-                
                 </li>
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
-                  </li>
-                  {% else %}
-                  <li>
-                      <a href="/select_doctors/">
-                      <i class="bi bi-circle"></i><span>Book Appointment</span></a>
-                  </li>
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
-                  </li>
-                  <li>
-                      <a href="#">
-                      <i class="bi bi-circle"></i><span>Appointments History</span></a>
-                  
-                  </li>{% endif %}  
-                  
-                </ul>
-              
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#Documents" data-bs-toggle="collapse" href="#">
-              <i class="bi bi-menu-button-wide"></i><span>Documents</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="Documents" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-              <li>
-                <ul id="Documents" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="#">
-                        <i class="bi bi-circle"></i><span>Medical Reports</span></a>
+                <!-- End Components Nav -->
+
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#Appointments" data-bs-toggle="collapse" href="#">
+                        <i class="bi bi-menu-button-wide"></i><span>Appointments</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li>
+                            <ul id="Appointments" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                {% if user.user_type == 'doctor' %}
+                                <li>
+                                    <a href="/create_appointment/">
+                                        <i class="bi bi-circle"></i><span>Create Appointment</span></a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="bi bi-circle"></i><span>Check Schdules</span></a>
+
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
+                                </li>
+                                {% else %}
+                                <li>
+                                    <a href="/select_doctors/">
+                                        <i class="bi bi-circle"></i><span>Book Appointment</span></a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="bi bi-circle"></i><span>Appointments History</span></a>
+
+                                </li>{% endif %}
+
+                            </ul>
+
+                    </ul>
                     </li>
-                    <li>
-                        <a href="#">
-                        <i class="bi bi-circle"></i><span>Goverment Issued Documents</span></a>
-                    
-                    </li>
-                </ul>
-              
-            </ul>
-          </li>
-          <li class="nav-heading">Pages</li>
-    
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="users-profile.html">
-              <i class="bi bi-person"></i>
-              <span>Profile</span>
-            </a>
-          </li><!-- End Profile Page Nav -->
-    
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="pages-faq.html">
-              <i class="bi bi-question-circle"></i>
-              <span>F.A.Q</span>
-            </a>
-          </li><!-- End F.A.Q Page Nav -->
-    
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="pages-contact.html">
-              <i class="bi bi-envelope"></i>
-              <span>Contact</span>
-            </a>
-          </li><!-- End Contact Page Nav -->
-    
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="pages-register.html">
-              <i class="bi bi-card-list"></i>
-              <span>Register</span>
-            </a>
-          </li><!-- End Register Page Nav -->
-    
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="/logout/">
-              <i class="bi bi-box-arrow-in-right"></i>
-              <span>Logout</span>
-            </a>
-          </li><!-- End Login Page Nav -->
-    
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#Documents" data-bs-toggle="collapse" href="#">
+                            <i class="bi bi-menu-button-wide"></i><span>Documents</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="Documents" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <ul id="Documents" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a href="#">
+                                            <i class="bi bi-circle"></i><span>Medical Reports</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="bi bi-circle"></i><span>Goverment Issued Documents</span></a>
+
+                                    </li>
+                                </ul>
+
+                        </ul>
+                        </li>
+                        <li class="nav-heading">Pages</li>
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="users-profile.html">
+                                <i class="bi bi-person"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                        <!-- End Profile Page Nav -->
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="pages-faq.html">
+                                <i class="bi bi-question-circle"></i>
+                                <span>F.A.Q</span>
+                            </a>
+                        </li>
+                        <!-- End F.A.Q Page Nav -->
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="pages-contact.html">
+                                <i class="bi bi-envelope"></i>
+                                <span>Contact</span>
+                            </a>
+                        </li>
+                        <!-- End Contact Page Nav -->
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="pages-register.html">
+                                <i class="bi bi-card-list"></i>
+                                <span>Register</span>
+                            </a>
+                        </li>
+                        <!-- End Register Page Nav -->
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="/logout/">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                        <!-- End Login Page Nav -->
+
         </ul>
-    
-      </aside>
+
+    </aside>
     <main id="main" class="main">
 
         <div class="pagetitle">
@@ -481,10 +505,11 @@
             </nav>
         </div>
         <!-- End Page Title -->
+
         <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: rgb(100, 100, 200);color: aliceblue;">
+                    <div class="modal-header" style="background-color: rgb(100, 168, 200);color: aliceblue;">
                         <h3 class="modal-title" id="exampleModalLabel">Appointment Booking</h3>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -519,27 +544,9 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label for="date" class="col-sm-2 col-form-label" required>Select Date</label>
-                                    <div class="col-sm-5">
-                                        <select id="date" name="date" class="form-select" required>
-                                          <option>Choose...</option>
-                                          <option>1 May 2023</option>
-                                          <option>2 May 2023</option>
-                                          <option>3 May 2023</option>
-                                          <option>4 May 2023</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label for="staticEmail" class="col-sm-2 col-form-label">Select Time</label>
-                                    <div class="col-sm-5">
-                                        <select id="inputState" class="form-select" required>
-                                          <option selected>Choose...</option>
-                                          <option>09:00-09:30 AM</option>
-                                          <option>10:00-10:30 AM</option>
-                                          <option>10:30-11:00 AM</option>
-                                          <option>11:00-11:30 AM</option>
-                                        </select>
+                                    <hr>
+                                    <h3>Appointments</h3>
+                                    <div id="myContainer">
                                     </div>
                                 </div>
                                 <div class="modal-footer" style="width: 400px;justify-content: center;">
@@ -588,7 +595,7 @@
                             <p class="card-text">Specialty: {{doctor.speciality}}</p>
                             <p class="card-text">Experience: {{doctor.experience}}+ years</p>
                             <p class="card-text">Location: {{doctor.address}}</p>
-                            <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" onclick="myFunction(['{{doctor.first_name}} {{doctor.last_name}}','{{doctor.speciality}}','{{doctor.experience}}+ years'])">Book Appointment</a>
+                            <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" onclick="myFunction(['{{doctor.first_name}} {{doctor.last_name}}','{{doctor.speciality}}','{{doctor.experience}}+ years','{{doctor.appointments}}'])">Book Appointment</a>
                         </div>
                     </div>{% endfor %}
 

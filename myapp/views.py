@@ -2,6 +2,7 @@ from django.shortcuts import render,HttpResponseRedirect
 from django.contrib.auth import authenticate,login as lk,logout as lo
 from django.contrib import messages
 from .forms import LoginForm
+from django.core import serializers
 from .models import *
 import requests
 from django.contrib.auth.hashers import make_password, check_password
@@ -120,7 +121,7 @@ def get_disease(symptoms_list):
     
 
 def bc(request):
-    return render(request,'s.html')
+    return render(request,'temp.html')
 
 def create_doctors(count):
     for i in range(count):
@@ -141,7 +142,14 @@ def doctor(request):
     if request.method == 'POST':
         appointment_id = None
         user_id = None
-    doctors = Doctor.objects.all()
+    doctors = Doctor.objects.filter(pk=3).values()
+    for doctor in doctors:
+        appointment_data = Appointment.objects.filter(doctor__id=3)
+        doctor['appointments']=serializers.serialize('json',appointment_data)
+    print('-------------------')
+    print(doctors)
+    print('--------------------')
+
     return render(request,'doctor.html',{'doctors':doctors})
 
 def generate_appointments(start_date=None,appointment_days=None,start_time=None,end_time=None):
@@ -169,9 +177,12 @@ def create_appointments(request):
         end_date = request.POST['end_date']
         start_time = request.POST['start_time']
         end_time = request.POST['end_time']
-        appointment_data=create_appointment_slots(start_date=start_date,end_date=end_date,start_time=start_time,end_time=end_time,doctor=request.user.id)
+        print('logged in user id is ',request.user.id)
+        print('logged in doctor obj is ',Doctor.objects.filter(pk=request.user.id).values())
+        appointment_data=create_appointment_slots(start_date=start_date,end_date=end_date,start_time=start_time,end_time=end_time,doctor=Doctor.objects.get(pk=request.user.id))
         print(appointment_data)
-        #Appointment.objects.bulk_create(appointment_data)
+        k=Appointment.objects.bulk_create(appointment_data)
+        print(f'mst bhai record create ho gya , data dekho toh {k}')
         s={'is_created':True}
     return render(request,'create_appointment.html',context=s)
 
@@ -200,13 +211,15 @@ def split_time(start_time=None, end_time=None, slot_duration=30, curr_date=None,
         # format the start and end times in am-pm format
         slot_start_str = slot_start.time().strftime('%I:%M %p')
         slot_end_str = slot_end.time().strftime('%I:%M %p')
-        appointment_dict = {}
-        appointment_dict['doctor']=doctor
-        appointment_dict['appointment_date']=curr_date
-        appointment_dict['start_time']=slot_start_str
-        appointment_dict['end_time']=slot_end_str
-        appointment_dict['is_available']=True
-        s.append(appointment_dict)
+        # appointment_dict = {}
+        # appointment_dict['doctor']=doctor
+        # appointment_dict['appointment_date']=curr_date
+        # appointment_dict['start_time']=slot_start_str
+        # appointment_dict['end_time']=slot_end_str
+        # appointment_dict['is_available']=True
+        #we are creating Appointment model object to store data using bulk create method
+        appointment_data = Appointment(doctor=doctor,appointment_date=curr_date,start_time=slot_start_str,end_time=slot_end_str,is_available=True)
+        s.append(appointment_data)
         # add the time slot to the list of slots
         
 
