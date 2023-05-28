@@ -12,8 +12,6 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <!-- Custom CSS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
     <!-- Favicons -->
     <link href={% static "assets/img/favicon.png" %} rel="icon">
     <link href={% static "assets/img/apple-touch-icon.png" %} rel="apple-touch-icon">
@@ -66,7 +64,17 @@
     </style>
     <script>
         console.log('hy')
-        
+
+
+        function submitAppointment(event) {
+            console.log("entered in submit application function ...")
+            const clickedButton = event.target;
+            const buttonValue = clickedButton.textContent;
+            const submit_btn = document.getElementById('submit_btn')
+            submit_btn.value = buttonValue
+
+            console.log("Clicked button value:", buttonValue);
+        }
 
         function myFunction(myList) {
             console.log(myList)
@@ -78,6 +86,25 @@
             dr_name.value = myList[0]
             speciality.value = myList[1]
             exp.value = myList[2]
+            appointment_data = JSON.parse(myList[3])
+            console.log(appointment_data)
+            let myContainer = document.getElementById('myContainer')
+            appointment_data.forEach((obj) => {
+                console.log('obj is ' + [obj.fields.appointment_date, obj.fields.start_time])
+                let btn = document.createElement("a");
+                let text = document.createTextNode(obj.fields.appointment_date + '<br>');
+                btn.innerHTML = obj.fields.appointment_date + '<br>';
+                btn.classList.add("btn", "btn-primary", "appointment_btns");
+                btn.style.marginLeft = '5px';
+                btn.style.backgroundColor = 'rgb(93, 159, 189)'
+                btn.value = obj
+                btn.href = '#'
+                let text1 = document.createTextNode(obj.fields.start_time + ' - ' + obj.fields.end_time);
+                btn.appendChild(text1);
+                btn.addEventListener('click', submitAppointment)
+                myContainer.appendChild(btn);
+            });
+
         }
     </script>
     <!-- =======================================================
@@ -89,42 +116,12 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Option 1</h5>
-                <p class="card-text">Some description of option 1.</p>
-                <a href="#" class="btn btn-primary">Select Option 1</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Option 2</h5>
-                <p class="card-text">Some description of option 2.</p>
-                <a href="#" class="btn btn-primary">Select Option 2</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Option 3</h5>
-                <p class="card-text">Some description of option 3.</p>
-                <a href="#" class="btn btn-primary">Select Option 3</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-    {% if is_created %}<script>
+    <h1>{{is_created}}</h1> {% if is_created %}
+    <script>
         $(document).ready(function() {
-        $('#exampleModalToggle').modal('show');
-    });</script>{% endif %}
+            $('#exampleModalToggle2').modal('show');
+        });
+    </script>{% endif %}
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
 
@@ -527,10 +524,11 @@
             </nav>
         </div>
         <!-- End Page Title -->
+
         <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color: rgb(100, 100, 200);color: aliceblue;">
+                    <div class="modal-header" style="background-color: rgb(100, 168, 200);color: aliceblue;">
                         <h3 class="modal-title" id="exampleModalLabel">Appointment Booking</h3>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -565,32 +563,14 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label for="date" class="col-sm-2 col-form-label" required>Select Date</label>
-                                    <div class="col-sm-5">
-                                        <select id="date" name="date" class="form-select" required>
-                                          <option>Choose...</option>
-                                          <option>1 May 2023</option>
-                                          <option>2 May 2023</option>
-                                          <option>3 May 2023</option>
-                                          <option>4 May 2023</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label for="staticEmail" class="col-sm-2 col-form-label">Select Time</label>
-                                    <div class="col-sm-5">
-                                        <select id="inputState" class="form-select" required>
-                                          <option selected>Choose...</option>
-                                          <option>09:00-09:30 AM</option>
-                                          <option>10:00-10:30 AM</option>
-                                          <option>10:30-11:00 AM</option>
-                                          <option>11:00-11:30 AM</option>
-                                        </select>
+                                    <hr>
+                                    <h3>Appointments</h3>
+                                    <div id="myContainer">
                                     </div>
                                 </div>
                                 <div class="modal-footer" style="width: 400px;justify-content: center;">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="submit">Schedule Call</button>
+                                    <button class="btn btn-primary" name="submit_btn" id="submit_btn" type="submit">Schedule Call</button>
                                 </div>
                             </div>
 
@@ -622,38 +602,24 @@
 
         <div class="album py-5 bg-light">
             <div class="container">
-                <header style="background-color: #464e93;color: whitesmoke;text-shadow: 3px;">
-                    <h1>Create Your Appontment</h1>
-                </header>
 
-                <form class="needs-validation" method="post" action="/create_appointment/">
-                    {% csrf_token %}
-                    <div class="row">
-                        <h5>Personal Info :</h5>
-                        <p style="color: rgb(143, 132, 132);">your name will be display to patients as given in form and meeting links will be shared to above mail</p>
-                        <hr>
-                        <div class=" col "><label for="DoctorName ">Doctors Name:</label>
-                            <input type="text " id="DoctorName " name="DoctorName " value="{{user.first_name}} {{user.last_name}}" disabled><br><br></div>
-                        <div class="col "><label for="DoctorEmail ">Doctors Email ID:</label>
-                            <input type="text " id="DoctorEmail " name="DoctorEmail " value="{{user.email}}" disabled><br><br></div>
-                    </div><br><br>
-                    <div class="row ">
-                        <h5>Date & Time:</h5>
-                        <p style="color: rgb(143, 132, 132); ">you can choose date and time for creating your appointment , don't add anything in end date if you are creating appointment for single day</p>
-                        <hr>
-                        <div class="col"><label for="start_date">Start Date:</label>
-                            <input type="date" id="start_date" name="start_date" required><br><br></div>
-                        <div class="col "><label for="end_date ">End Date:</label>
-                            <input type="date" id="end_date" name="end_date" required><br><br></div>
-                    </div>
-                    <div class="row ">
-                        <div class="col"><label for="start_time">Start Time:</label>
-                            <input type="time" id="start_time" name="start_time" required><br><br></div>
-                        <div class="col"><label for="end_time">End Time:</label>
-                            <input type="time" id="end_time" name="end_time" required><br><br></div>
-                    </div>
-                    <button type="submit">Create Appointment</button>
-                </form>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    <!-- loop lagana hai -->
+                    {% for doctor in doctors %}
+                    <div class="col">
+                        <div class="card">
+                            {% if doctor.gender == 'male' %}<img class="card-img-top" src="https://www.iconbunny.com/icons/media/catalog/product/2/1/2131.12-doctor-icon-iconbunny.jpg" alt="Doctor Image"> {% else %}<img class="card-img-top" src="https://cdn-icons-png.flaticon.com/512/1869/1869354.png"
+                                alt="Doctor Image"> {% endif %}
+                            <h2 class="card-title">Dr. {{doctor.first_name}} {{doctor.last_name}}</h2>
+                            <p class="card-text">Specialty: {{doctor.speciality}}</p>
+                            <p class="card-text">Experience: {{doctor.experience}}+ years</p>
+                            <p class="card-text">Location: {{doctor.address}}</p>
+                            <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" onclick="myFunction(['{{doctor.first_name}} {{doctor.last_name}}','{{doctor.speciality}}','{{doctor.experience}}+ years','{{doctor.appointments}}'])">Book Appointment</a>
+                        </div>
+                    </div>{% endfor %}
+
+
+                </div>
             </div>
         </div>
 

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Event</title>
+</head>
+<body>
+    <h1>Create Event</h1>
+    <form method="post" action="{% url 'create_event' %}">
+        {% csrf_token %}
+        <label for="guests">Guests:</label>
+        <input type="text" id="guests" name="guests"><br><br>
+        <label for="date">Date:</label>
+        <input type="text" id="date" name="date"><br><br>
+        <label for="time">Time:</label>
+        <input type="text" id="time" name="time"><br><br>
+        <input type="submit" value="Create Event">
+    </form>
+</body>
+</html>

@@ -1,0 +1,57 @@
+  .container {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .date {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .time-slot {
+    margin-bottom: 5px;
+  }
+
+  .cancel-button {
+    margin-right: 5px;
+    background-color: #4154f1;
+    align-items: center;
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer; 
+  }
+
+  .cancel-button:hover {
+    background-color: #4154f1;
+  }
+
+  .cancel-all {
+    padding: 10px 20px;
+    display: block;
+    margin: 0 auto;
+    background-color: #4154f1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .cancel-all:hover {
+    background-color: #4154f1;
+  }
+
+  .message {
+    background-color: #4154f1;
+    color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+

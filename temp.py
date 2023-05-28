@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
 
 #2023-05-07 2023-05-10 23:11 03:15
+
+import json
+# print(json.dumps(datetime.now().strftime('%Y')))
 def split_time(start_time=None, end_time=None, slot_duration=30, curr_date=None):
     
 

@@ -9,24 +9,25 @@ from django.contrib.auth.hashers import make_password, check_password
 import json
 from faker import Faker
 import random
+from datetime import datetime
 faker = Faker()
 from datetime import *
+from . import generate_meeting
+import json
+
+
 ## Create your views here.
 def login(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect("/profile")
     if request.method=="POST":
         a=request.POST["email"]
-        print("a is ",a)
         fm=LoginForm(request,data=request.POST)
         
         if fm.is_valid():
             usernm=fm.cleaned_data["email"]
             paaswrd=fm.cleaned_data["password"]
-            print("username is ",usernm)
-            print("passwrd is ",paaswrd)
             user=authenticate(email=usernm,password=paaswrd)
-            print("user is ",user)
             if user is not None:
                 lk(request,user)
                 messages.set_level(request,5)
@@ -47,7 +48,6 @@ def movie(request):
         description=request.POST.get("description",None)
         release_date=request.POST.get("release_date")
         user=request.POST.get("user")
-        print(moviename,category,language,description,release_date,user)
         #s=ReportForm(location1=loc1,location2=loc2,description=description,date=date,time=time,severity=serverity,cause=cause,actions=action,type_env=type_env,type_inju=type_inju,type_property=type_property,type_vehicle=type_vehicle,submitted="f",reported_by_id=request.user)
         #s.save()
         print("saved")
@@ -66,13 +66,11 @@ def register(request):
         phone = request.POST['phone']
         gender = request.POST['gender']
         user_type = request.POST['user_type']
-        print(gender,user_type)
         password = request.POST["password"]
         hashed_pwd = make_password(password)
         if user_type=='doctor':
             experience = request.POST["experience"]
             speciality = request.POST["specialization"]
-            print(fname,lname,email,phone,speciality,experience,gender)
             Doctor.objects.create(first_name=fname,last_name=lname,phone_number=phone,gender=gender,email=email,user_type=user_type,password=hashed_pwd,experience=experience,speciality=speciality)
         else:
             s=User.objects.create_user(first_name=fname,last_name=lname,phone_number=phone,gender=gender,email=email,user_type=user_type,password=password)
@@ -86,7 +84,6 @@ def dashboard(request):
     disease_list=[]
     if request.method=="POST":
         symptoms = request.POST['frm_btn']
-        print("bhai symptoms ka list dekhna toh ",symptoms,type(symptoms))
         disease_list=get_disease(symptoms)
     symptoms = Symptom.objects.all()
     return render(request,'dashboard.html',{'symptoms':symptoms,'disease_list':disease_list})
@@ -98,8 +95,7 @@ def get_all_symptoms():
     data = json.loads(requests.get(url,auth=(email,passwrd)).text)
     for i in range(50):
         Symptom.objects.create(id=data[i]["ID"],name=data[i]["Name"])
-        print(i,"done")
-    print(len(data))
+        
 
 def get_disease(symptoms_list):
     try:
@@ -109,10 +105,8 @@ def get_disease(symptoms_list):
         passwrd = "A@shu6124"
         symptoms_list = json.loads(symptoms_list)
         data = json.loads(requests.get(url,json=symptoms_list,auth=(email,passwrd)).text)
-        print("data is ",data)
         data_len = min([3,len(data)])
         data = data[:data_len]
-        print(data)
         for diesease in data:
             disease_list.append({'name':diesease["Issue"]["Name"],'accuracy':round(diesease["Issue"]["Accuracy"],2),'prof_name':diesease["Issue"]["ProfName"],'ranking':diesease["Issue"]["Ranking"]})
         return disease_list
@@ -139,37 +133,48 @@ def create_doctors(count):
         Doctor.objects.create(first_name=first_name,last_name=last_name,phone_number=phone_number,email=email,gender=gender,user_type=user_type,address=address,experience=experience,speciality=random_specialty)
     
 def doctor(request):
+    is_created = False
     if request.method == 'POST':
-        appointment_id = None
-        user_id = None
-    doctors = Doctor.objects.filter(pk=3).values()
+        appointment_data = json.loads(request.POST.get('submit_btn'))
+        print(f'hey there appointment data is {appointment_data}')
+        doctor_mail = appointment_data['doctor_mail']
+        patient_mail = appointment_data['patient_mail']
+        appointment_data = appointment_data['appointment_time'].split(' ')
+        print(f'appointment_date is {appointment_data}')
+        appointment_date = appointment_data[0].split('-')
+        appointment_start_time = appointment_data[3].split(':')
+        start_hour = appointment_start_time[0]
+        start_minute = appointment_start_time[1]
+        appointment_end_time = appointment_data[4][3:]
+        appointment_end_time = appointment_end_time.split(':')
+        end_hour = appointment_end_time[0]
+        end_minute = appointment_end_time[1]
+        appointment_start = datetime(int(appointment_date[0]),int(appointment_date[1]),int(appointment_date[2]),int(start_hour),int(start_minute))
+        appointment_end = datetime(int(appointment_date[0]),int(appointment_date[1]),int(appointment_date[2]),int(end_hour),int(end_minute))
+        appointment_start_string = appointment_start.isoformat()
+        #appointment_start_string = json.dumps(appointment_start_string)
+        appointment_end_string = appointment_end.isoformat()
+        #appointment_end_string = json.dumps(appointment_end_string)
+        print(f'appointment_start is {type(appointment_start_string)}')
+        print(f'appointment_end is {appointment_end_string}')
+        #----------- sending mail logic ----------
+        try:
+           # plan = generate_meeting.EventPlanner({"rohitkashyap8925@gmail.com","sangeeta.gupta.dev@gmail.com","pshreyasi325@gmail.com"}, {"start": appointment_start_string,"end": appointment_end_string})                                                        
+            plan = generate_meeting.EventPlanner([patient_mail,doctor_mail,"pshreyasi325@gmail.com"], {"start": appointment_start_string,
+                                                                          "end": appointment_end_string})
+            print(plan.event_states)
+        except Exception as e:
+            print('error occured : '+str(e))
+        #-----------------------------------------
+        is_created = True
+    doctors = Doctor.objects.all().values()
     for doctor in doctors:
-        appointment_data = Appointment.objects.filter(doctor__id=3)
+        appointment_data = Appointment.objects.filter(doctor__id=doctor['id'])
         doctor['appointments']=serializers.serialize('json',appointment_data)
-    print('-------------------')
-    print(doctors)
-    print('--------------------')
-
-    return render(request,'doctor.html',{'doctors':doctors})
-
-def generate_appointments(start_date=None,appointment_days=None,start_time=None,end_time=None):
-    s=datetime.now().date()
-    start_time=timedelta(hours=9,minutes=0)
-    end_time=timedelta(hours=12,minutes=0)
-    duration = 30
-    print(start_time)
-    print(int((end_time-start_time).total_seconds()//60))
-    next_date=s+timedelta(days=1)
-    print(next_date)
-    print('--------------------------')
-    count=1
-    for i in range(duration,int((end_time-start_time).total_seconds()//60)+duration,duration):
-        print(f'slot {count} : {start_time} - {start_time+timedelta(minutes=duration)}')
-        count+=1
-        start_time+=timedelta(minutes=duration)
-    print('----------------------------')
     
+    return render(request,'doctor.html',{'doctors':doctors,'is_created':is_created})
 
+    
 def create_appointments(request):
     s={'is_created':False}
     if request.method=='POST':
@@ -177,12 +182,8 @@ def create_appointments(request):
         end_date = request.POST['end_date']
         start_time = request.POST['start_time']
         end_time = request.POST['end_time']
-        print('logged in user id is ',request.user.id)
-        print('logged in doctor obj is ',Doctor.objects.filter(pk=request.user.id).values())
         appointment_data=create_appointment_slots(start_date=start_date,end_date=end_date,start_time=start_time,end_time=end_time,doctor=Doctor.objects.get(pk=request.user.id))
-        print(appointment_data)
         k=Appointment.objects.bulk_create(appointment_data)
-        print(f'mst bhai record create ho gya , data dekho toh {k}')
         s={'is_created':True}
     return render(request,'create_appointment.html',context=s)
 
@@ -190,9 +191,14 @@ def split_time(start_time=None, end_time=None, slot_duration=30, curr_date=None,
     
 
     # convert start and end times to datetime objects
+    start_hour = int(start_time[:2])
+    start_minute = int(end_time[-2:])
+    end_hour = int(end_time[:2])
+    end_minute = int(end_time[-2:])
     start_time = timedelta(hours=int(start_time[:2]),minutes=int(end_time[-2:]))
     end_time = timedelta(hours=int(end_time[:2]),minutes=int(end_time[-2:]))
-
+    
+                   
     # calculate the total number of minutes between start and end time
     total_minutes = int((end_time - start_time).total_seconds() / 60)
 
@@ -204,19 +210,14 @@ def split_time(start_time=None, end_time=None, slot_duration=30, curr_date=None,
     s=[]
     # iterate through the slots and calculate the start and end time of each slot
     for i in range(num_slots):
-        start_time = datetime(2023, 5, 6, 9, 0, 0)
+        start_time = datetime(2023, 5, 6, start_hour, start_minute, 0)
         slot_start = start_time + timedelta(minutes=i * slot_duration)
         slot_end = slot_start + timedelta(minutes=slot_duration)
-        start_time = datetime(2023, 5, 6, 0, 0, 0)
+        start_time = datetime(2023, 5, 6, end_hour, end_minute, 0)
         # format the start and end times in am-pm format
         slot_start_str = slot_start.time().strftime('%I:%M %p')
         slot_end_str = slot_end.time().strftime('%I:%M %p')
-        # appointment_dict = {}
-        # appointment_dict['doctor']=doctor
-        # appointment_dict['appointment_date']=curr_date
-        # appointment_dict['start_time']=slot_start_str
-        # appointment_dict['end_time']=slot_end_str
-        # appointment_dict['is_available']=True
+        
         #we are creating Appointment model object to store data using bulk create method
         appointment_data = Appointment(doctor=doctor,appointment_date=curr_date,start_time=slot_start_str,end_time=slot_end_str,is_available=True)
         s.append(appointment_data)
@@ -227,7 +228,6 @@ def split_time(start_time=None, end_time=None, slot_duration=30, curr_date=None,
 
 def create_appointment_slots(start_date,end_date,start_time,end_time,doctor):
     start_date=datetime(day=int(start_date[-2:]),month=int(start_date[5:7]),year=int(start_date[:4]))
-    print(start_date.strftime('%Y-%m-%d : %A'))
     end_date=datetime(day=int(end_date[-2:]),month=int(end_date[5:7]),year=int(end_date[:4]))
     date_diff=int((end_date-start_date).days)
     k=[]
@@ -236,3 +236,24 @@ def create_appointment_slots(start_date,end_date,start_time,end_time,doctor):
         curr_date = curr_date.strftime('%Y-%m-%d : %A')
         k.extend(split_time(start_time=start_time,end_time=end_time,curr_date=curr_date,doctor=doctor))
     return k
+
+def bp(request):
+    return render(request,"bp.html")
+
+def sugar(request):
+    return render(request,"sugar.html")
+
+def upload(request):
+    return render(request,"upload.html")
+
+def upload1(request):
+    return render(request,"upload1.html")
+
+def apt_history(request):
+    return render(request,"appointment_history.html")
+
+def apt_cancel(request):
+    return render(request,"appointment_cancellation.html")
+
+def create_event(request):
+    return render(request, 'create_event.html')

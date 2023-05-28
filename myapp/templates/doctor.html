@@ -12,6 +12,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <!-- Custom CSS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <!-- Favicons -->
     <link href={% static "assets/img/favicon.png" %} rel="icon">
     <link href={% static "assets/img/apple-touch-icon.png" %} rel="apple-touch-icon">
@@ -61,33 +63,63 @@
         .btn {
             margin-top: 20px;
         }
+        
+        #container {
+            background-color: rgb(79, 79, 115);
+        }
     </style>
     <script>
         console.log('hy')
 
+
+        function submitAppointment(event) {
+            var currentUserMail = '{{ user.email }}';
+
+            console.log("entered in submit application function ...")
+            const clickedButton = event.target;
+            const buttonValue = {
+                'appointment_time': clickedButton.textContent,
+                'doctor_mail': clickedButton.value,
+                'patient_mail': currentUserMail
+            };
+            const buttonValueJson = JSON.stringify(buttonValue);
+            const submit_btn = document.getElementById('submit_btn')
+            console.log("current btn value is " + buttonValueJson)
+            submit_btn.value = buttonValueJson
+
+            console.log("Clicked button value:", buttonValueJson);
+        }
+
         function myFunction(myList) {
-            console.log(myList)
+            console.log(myList[3])
             var exampleModal = document.getElementById('exampleModalToggle')
-            console.log(exampleModal)
+
             var dr_name = document.getElementById('dr_name')
             var speciality = document.getElementById('speciality')
             var exp = document.getElementById('exp')
             dr_name.value = myList[0]
             speciality.value = myList[1]
             exp.value = myList[2]
-            appointment_data = JSON.parse(myList[3])
-            console.log(appointment_data)
-            let myContainer = document.getElementById('myContainer')
-            appointment_data.forEach((obj) => {
-                let btn = document.createElement("button");
+            email = myList[3]
+            appointment_data = JSON.parse(myList[4])
 
+            let myContainer = document.getElementById('myContainer')
+            myContainer.innerHTML = ''
+            if (appointment_data.length === 0) {
+                console.log("The list is empty.");
+            } else appointment_data.forEach((obj) => {
+                console.log('obj is ' + [obj.fields.appointment_date, obj.fields.start_time])
+                let btn = document.createElement("a");
                 let text = document.createTextNode(obj.fields.appointment_date + '<br>');
                 btn.innerHTML = obj.fields.appointment_date + '<br>';
-                btn.classList.add("btn", "btn-primary");
+                btn.classList.add("btn", "btn-primary", "appointment_btns");
                 btn.style.marginLeft = '5px';
                 btn.style.backgroundColor = 'rgb(93, 159, 189)'
-                let text1 = document.createTextNode(obj.fields.start_time + ' - ' + obj.fields.end_time);
+                btn.value = email
+                btn.href = '#'
+                let text1 = document.createTextNode(' ' + obj.fields.start_time + '-' + obj.fields.end_time);
                 btn.appendChild(text1);
+                btn.addEventListener('click', submitAppointment)
                 myContainer.appendChild(btn);
             });
 
@@ -102,7 +134,13 @@
 </head>
 
 <body>
+    <h1>{{is_created}}</h1> {% if is_created %}
+    <script>
+        $(document).ready(function() {
+            $('#exampleModalToggle2').modal('show');
 
+        });
+    </script>{% endif %}
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
 
@@ -283,7 +321,7 @@
                 <li class="nav-item dropdown pe-3">
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <img src={% static "assets/img/profile-img.jpg" %} alt="Profile" class="rounded-circle">
+                        {% if user.gender == 'male' %}<img src={% static "assets/img/profile-img.jpg" %} alt="Profile" class="rounded-circle">{% else %}<img src={% static "assets/img/messages-2.jpg" %} alt="Profile" class="rounded-circle">{% endif %}
                         <span class="d-none d-md-block dropdown-toggle ps-2">{{user}}</span>
                     </a>
                     <!-- End Profile Iamge Icon -->
@@ -351,12 +389,6 @@
 
         <ul class="sidebar-nav" id="sidebar-nav">
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="/dashboard/">
-                    <i class="bi bi-grid"></i>
-                    <span>Disease Predictor</span>
-                </a>
-            </li>
             <!-- End Dashboard Nav -->
 
             <li class="nav-item">
@@ -367,18 +399,13 @@
                     <li>
                         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li>
-                                <a href="#">
+                                <a href="/bp/">
                                     <i class="bi bi-circle"></i><span>Blood Pressure</span></a>
 
                             </li>
                             <li>
-                                <a href="#">
+                                <a href="/sugar/">
                                     <i class="bi bi-circle"></i><span>Sugar Level</span></a>
-
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="bi bi-circle"></i><span>Heart Rate</span></a>
 
                             </li>
                         </ul>
@@ -403,10 +430,9 @@
                                 <li>
                                     <a href="#">
                                         <i class="bi bi-circle"></i><span>Check Schdules</span></a>
-
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/appointment_cancellation/">
                                         <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
                                 </li>
                                 {% else %}
@@ -415,11 +441,11 @@
                                         <i class="bi bi-circle"></i><span>Book Appointment</span></a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="appointment_cancellation/">
                                         <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
                                 </li>
                                 <li>
-                                    <a href="#">
+                                    <a href="/appointment_history/">
                                         <i class="bi bi-circle"></i><span>Appointments History</span></a>
 
                                 </li>{% endif %}
@@ -436,17 +462,23 @@
                             <li>
                                 <ul id="Documents" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                                     <li>
-                                        <a href="#">
+                                        <a href="/upload/">
                                             <i class="bi bi-circle"></i><span>Medical Reports</span></a>
                                     </li>
                                     <li>
-                                        <a href="#">
+                                        <a href="/upload1/">
                                             <i class="bi bi-circle"></i><span>Goverment Issued Documents</span></a>
 
                                     </li>
                                 </ul>
 
                         </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" href="/dashboard/">
+                                <i class="bi bi-grid"></i>
+                                <span>Disease Predictor</span>
+                            </a>
                         </li>
                         <li class="nav-heading">Pages</li>
 
@@ -493,6 +525,8 @@
         </ul>
 
     </aside>
+    <!-- End Sidebar-->
+
     <main id="main" class="main">
 
         <div class="pagetitle">
@@ -551,7 +585,7 @@
                                 </div>
                                 <div class="modal-footer" style="width: 400px;justify-content: center;">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="submit">Schedule Call</button>
+                                    <button class="btn btn-primary" name="submit_btn" id="submit_btn" type="submit">Schedule Call</button>
                                 </div>
                             </div>
 
@@ -595,7 +629,7 @@
                             <p class="card-text">Specialty: {{doctor.speciality}}</p>
                             <p class="card-text">Experience: {{doctor.experience}}+ years</p>
                             <p class="card-text">Location: {{doctor.address}}</p>
-                            <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" onclick="myFunction(['{{doctor.first_name}} {{doctor.last_name}}','{{doctor.speciality}}','{{doctor.experience}}+ years','{{doctor.appointments}}'])">Book Appointment</a>
+                            <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" onclick="myFunction(['{{doctor.first_name}} {{doctor.last_name}}','{{doctor.speciality}}','{{doctor.experience}}+ years','{{doctor.email}}','{{doctor.appointments}}'])">Book Appointment</a>
                         </div>
                     </div>{% endfor %}
 
