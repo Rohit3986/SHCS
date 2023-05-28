@@ -453,38 +453,28 @@
     <!-- End Sidebar-->
 
     <main id="main" class="main">
-
+        {% if appointment_data %}
         <h1> Appointment History</h1>
         <div class="container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Doctor</th>
-                        <th>Booking Status</th>
-                    </tr>
-                </thead>
-                <tbody>
+            
                     <!-- Add rows for each upcoming appointment -->
-                    <tr>
-                        <td>May 12, 2023</td>
-                        <td>10:00 AM</td>
-                        <td>Dr. Smith</td>
-                        <td>Confirmed</td>
-                    </tr>
-                    <tr>
-                        <td>May 19, 2023</td>
-                        <td>2:00 PM</td>
-                        <td>Dr. Johnson</td>
-                        <td>Pending</td>
-                    </tr>
-                    <tr>
-                        <td>May 26, 2023</td>
-                        <td>9:30 AM</td>
-                        <td>Dr. Lee</td>
-                        <td>Cancelled</td>
-                    </tr>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Doctor</th>
+                                <th>Booking Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>{% for data in appointment_data %}<tr>
+                        <td>{{data.appointment_date}}</td>
+                        <td>{{data.start_time}} - {{data.end_time}}</td>
+                        <td>Dr. {{data.doctor.first_name}} {{data.doctor.last_name}}</td>
+                        <td>{{data.appointment_status}}</td>
+                    </tr>{% endfor %}{% else %}<hr><h1>No Records Available</h1>{% endif %}
+                    
+                    
                     <!-- Add more rows for additional appointments -->
                 </tbody>
             </table>

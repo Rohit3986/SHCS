@@ -77,17 +77,22 @@
 
             console.log("entered in submit application function ...")
             const clickedButton = event.target;
+            
+            const clickedButtoValue = JSON.parse(clickedButton.value)
+            
             const buttonValue = {
+                'appointment_id': clickedButtoValue['appointment_id'],
                 'appointment_time': clickedButton.textContent,
-                'doctor_mail': clickedButton.value,
+                'doctor_mail': clickedButtoValue['email'],
                 'patient_mail': currentUserMail
             };
+            console.log('clicked button value is '+buttonValue)
             const buttonValueJson = JSON.stringify(buttonValue);
             const submit_btn = document.getElementById('submit_btn')
-            console.log("current btn value is " + buttonValueJson)
+            
             submit_btn.value = buttonValueJson
 
-            console.log("Clicked button value:", buttonValueJson);
+            
         }
 
         function myFunction(myList) {
@@ -106,16 +111,17 @@
             let myContainer = document.getElementById('myContainer')
             myContainer.innerHTML = ''
             if (appointment_data.length === 0) {
+                myContainer.innerHTML = '<h3> No slots are available at this time</h3>'
                 console.log("The list is empty.");
             } else appointment_data.forEach((obj) => {
-                console.log('obj is ' + [obj.fields.appointment_date, obj.fields.start_time])
                 let btn = document.createElement("a");
                 let text = document.createTextNode(obj.fields.appointment_date + '<br>');
                 btn.innerHTML = obj.fields.appointment_date + '<br>';
                 btn.classList.add("btn", "btn-primary", "appointment_btns");
                 btn.style.marginLeft = '5px';
                 btn.style.backgroundColor = 'rgb(93, 159, 189)'
-                btn.value = email
+                btn.value = JSON.stringify({'appointment_id':obj.pk,'email':email})
+                console.log('btn value is '+btn.value)
                 btn.href = '#'
                 let text1 = document.createTextNode(' ' + obj.fields.start_time + '-' + obj.fields.end_time);
                 btn.appendChild(text1);
@@ -578,9 +584,9 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <hr>
-                                    <h3>Appointments</h3>
                                     <div id="myContainer">
+                                        <hr>
+                                        <h3>Appointments</h3>
                                     </div>
                                 </div>
                                 <div class="modal-footer" style="width: 400px;justify-content: center;">

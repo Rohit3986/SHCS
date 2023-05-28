@@ -92,7 +92,7 @@ class Appointment(models.Model):
     appointment_date = models.CharField(max_length=30)
     start_time = models.CharField(max_length=20,default=None)
     end_time = models.CharField(max_length=20,default=None)
-    appointment_status = models.CharField(choices=(('available','available'),('booked','booked'),('cancelled','cancelled')),default="available",max_length=17,blank=True)
+    appointment_status = models.CharField(choices=(('available','available'),('confirmed','confirmed'),('cancelled','cancelled')),default="available",max_length=17,blank=True)
     booked_by = models.ForeignKey(to=User,on_delete=models.PROTECT,related_name='patient',null=True,blank=True)
     cancelled_by = models.CharField(choices=(('doctor','doctor'),('patient','patient')),max_length=15,null=True,blank=True)
     is_available = models.BooleanField(default=True)

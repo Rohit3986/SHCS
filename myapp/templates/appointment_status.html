@@ -7,11 +7,7 @@
     <title>Smart Health Consultancy Service</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <!-- Custom CSS -->
+
     <!-- Favicons -->
     <link href={% static "assets/img/favicon.png" %} rel="icon">
     <link href={% static "assets/img/apple-touch-icon.png" %} rel="apple-touch-icon">
@@ -31,82 +27,40 @@
 
     <!-- Template Main CSS File -->
     <link href={% static "assets/css/style.css" %} rel="stylesheet">
-    <style>
-        .card {
-            margin-top: 30px;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            text-align: center;
-            width: 300px;
-        }
-        
-        .card-img-top {
-            width: 70%;
-            height: 70%;
-            object-fit: cover;
-            margin: 0 auto;
-            border-radius: 50%;
-        }
-        
-        .card-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-        
-        .card-text {
-            margin-top: 10px;
-        }
-        
-        .btn {
-            margin-top: 20px;
-        }
-    </style>
+    <link href={% static "assets/css/apt_history.css" %} rel="stylesheet">
+
     <script>
-        console.log('hy')
+      
+      const data = []
+      function addSymptom(symptom_id,symptom_name) {
+        console.log("symptom_id is "+symptom_id)
+        console.log("symptom_name is "+symptom_name)
+        const trNode = document.createElement('tr');
+        const td_id_Node = document.createElement('td');
+        const td_name_Node = document.createElement('td');
+        
 
+        // Change the name parameter of the element
+        td_id_Node.setAttribute("class", "text-primary fw-bold");
+        td_id_Node.setAttribute("name", "symptoms_list");
+        td_id_Node.setAttribute("id", "symptoms_list")
+        td_id_Node.setAttribute("value", symptom_id);
+        console.log(td_id_Node)
+        td_id_Node.innerText = symptom_id
+        td_name_Node.innerText =symptom_name
+        trNode.appendChild(td_id_Node)
+        trNode.appendChild(td_name_Node)
+        var symptoms_form = document.getElementById("symptoms_form")
+        yoursymptom_tbody = document.getElementById('yoursymptom_tbody')
+        yoursymptom_tbody.appendChild(trNode)
+        const form_button =document.getElementById('frm_btn')
+        data.push(symptom_id)
+        form_button.setAttribute("value", JSON.stringify(data))
+        console.log(data)
+      }
 
-        function submitAppointment(event) {
-            console.log("entered in submit application function ...")
-            const clickedButton = event.target;
-            const buttonValue = clickedButton.textContent;
-            const submit_btn = document.getElementById('submit_btn')
-            submit_btn.value = buttonValue
-
-            console.log("Clicked button value:", buttonValue);
-        }
-
-        function myFunction(myList) {
-            console.log(myList)
-            var exampleModal = document.getElementById('exampleModalToggle')
-            console.log(exampleModal)
-            var dr_name = document.getElementById('dr_name')
-            var speciality = document.getElementById('speciality')
-            var exp = document.getElementById('exp')
-            dr_name.value = myList[0]
-            speciality.value = myList[1]
-            exp.value = myList[2]
-            appointment_data = JSON.parse(myList[3])
-            console.log(appointment_data)
-            let myContainer = document.getElementById('myContainer')
-            appointment_data.forEach((obj) => {
-                console.log('obj is ' + [obj.fields.appointment_date, obj.fields.start_time])
-                let btn = document.createElement("a");
-                let text = document.createTextNode(obj.fields.appointment_date + '<br>');
-                btn.innerHTML = obj.fields.appointment_date + '<br>';
-                btn.classList.add("btn", "btn-primary", "appointment_btns");
-                btn.style.marginLeft = '5px';
-                btn.style.backgroundColor = 'rgb(93, 159, 189)'
-                btn.value = obj
-                btn.href = '#'
-                let text1 = document.createTextNode(obj.fields.start_time + ' - ' + obj.fields.end_time);
-                btn.appendChild(text1);
-                btn.addEventListener('click', submitAppointment)
-                myContainer.appendChild(btn);
-            });
-
-        }
-    </script>
+      
+  </script>
     <!-- =======================================================
   * Template Name: NiceAdmin - v2.4.1
   * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
@@ -116,12 +70,7 @@
 </head>
 
 <body>
-    <h1>{{is_created}}</h1> {% if is_created %}
-    <script>
-        $(document).ready(function() {
-            $('#exampleModalToggle2').modal('show');
-        });
-    </script>{% endif %}
+
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
 
@@ -302,8 +251,8 @@
                 <li class="nav-item dropdown pe-3">
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <img src={% static "assets/img/profile-img.jpg" %} alt="Profile" class="rounded-circle">
-                        <span class="d-none d-md-block dropdown-toggle ps-2">{{user}}</span>
+                        {% if user.gender == 'male' %}<img src={% static "assets/img/profile-img.jpg" %} alt="Profile" class="rounded-circle">{% else %}<img src={% static "assets/img/messages-2.jpg" %} alt="Profile" class="rounded-circle">{% endif %}
+                        <span class="d-none d-md-block dropdown-toggle ps-2">{{user.first_name}} {{user.last_name}}</span>
                     </a>
                     <!-- End Profile Iamge Icon -->
 
@@ -366,8 +315,7 @@
     <!-- End Header -->
 
     <!-- ======= Sidebar ======= -->
-     <!-- ======= Sidebar ======= -->
-     <aside id="sidebar" class="sidebar">
+    <aside id="sidebar" class="sidebar">
 
         <ul class="sidebar-nav" id="sidebar-nav">
     
@@ -411,19 +359,12 @@
                     <a href="/check_status/">
                     <i class="bi bi-circle"></i><span>Check Schdules</span></a>
                 </li>
-                  <li>
-                      <a href="/appointment_cancellation/">
-                      <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
-                  </li>
                   {% else %}
                   <li>
                       <a href="/select_doctors/">
                       <i class="bi bi-circle"></i><span>Book Appointment</span></a>
                   </li>
-                  <li>
-                      <a href="appointment_cancellation/">
-                      <i class="bi bi-circle"></i><span>Cancle Appointment</span></a>
-                  </li>
+                  
                   <li>
                       <a href="/appointment_history/">
                       <i class="bi bi-circle"></i><span>Appointments History</span></a>
@@ -463,32 +404,22 @@
           <li class="nav-heading">Pages</li>
     
           <li class="nav-item">
-            <a class="nav-link collapsed" href="users-profile.html">
+            <a class="nav-link collapsed" href="/profile/">
               <i class="bi bi-person"></i>
               <span>Profile</span>
             </a>
           </li><!-- End Profile Page Nav -->
     
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="pages-faq.html">
-              <i class="bi bi-question-circle"></i>
-              <span>F.A.Q</span>
-            </a>
-          </li><!-- End F.A.Q Page Nav -->
+          <!-- End F.A.Q Page Nav -->
     
           <li class="nav-item">
-            <a class="nav-link collapsed" href="pages-contact.html">
+            <a class="nav-link collapsed" href="#">
               <i class="bi bi-envelope"></i>
               <span>Contact</span>
             </a>
           </li><!-- End Contact Page Nav -->
     
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="pages-register.html">
-              <i class="bi bi-card-list"></i>
-              <span>Register</span>
-            </a>
-          </li><!-- End Register Page Nav -->
+          <!-- End Register Page Nav -->
     
           <li class="nav-item">
             <a class="nav-link collapsed" href="/logout/">
@@ -501,122 +432,38 @@
     
       </aside>
     <!-- End Sidebar-->
+
     <main id="main" class="main">
-
-        <div class="pagetitle">
-            <h1>Dashboard</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active">Select Doctors</li>
-                </ol>
-            </nav>
-        </div>
-        <!-- End Page Title -->
-
-        <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color: rgb(100, 168, 200);color: aliceblue;">
-                        <h3 class="modal-title" id="exampleModalLabel">Appointment Booking</h3>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-
-                        <form style="width: 1000px;" class="row row-cols-2" method="post" action="/select_doctors/">
-                            {% csrf_token %}
-                            <div class="col">
-                                <div class="mb-3 row">
-                                    <label for="staticEmail" class="col-sm-2 col-form-label">Doctor Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" readonly class="form-control-plaintext" id="dr_name" value="Dr. Larry Fisher">
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row">
-                                    <label for="staticEmail" class="col-sm-2 col-form-label">Speciality</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" readonly class="form-control-plaintext" id="speciality" value="Phychiatrist">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label for="staticEmail" class="col-sm-2 col-form-label">Exp</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" readonly class="form-control-plaintext" id="exp" value="4+ years">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label for="staticEmail" class="col-sm-2 col-form-label">Fees</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="12$">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <hr>
-                                    <h3>Appointments</h3>
-                                    <div id="myContainer">
-                                    </div>
-                                </div>
-                                <div class="modal-footer" style="width: 400px;justify-content: center;">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" name="submit_btn" id="submit_btn" type="submit">Schedule Call</button>
-                                </div>
-                            </div>
-
-                        </form>
-
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-        <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color: rgb(100, 100, 200);color: aliceblue;">
-                        <h5 class="modal-title" id="exampleModalToggleLabel2">Slot Booked</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Congratulations!! Your Appointment Booked Sucessfully.
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
+        {% if appointment_data %}
+        <h1> Appointment History</h1>
+        <div class="container">
+            
+                    <!-- Add rows for each upcoming appointment -->
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Patient</th>
+                                <th>Booking Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>{% for data in appointment_data %}<tr>
+                        <td>{{data.appointment_date}}</td>
+                        <td>{{data.start_time}} - {{data.end_time}}</td>
+                        <td>{{data.booked_by.first_name}} {{data.booked_by.last_name}}</td>
+                        <td>{{data.appointment_status}}</td>
+                    </tr>{% endfor %}{% else %}<hr><h1>No Records Available</h1>{% endif %}
+                    
+                    
+                    <!-- Add more rows for additional appointments -->
+                </tbody>
+            </table>
         </div>
 
 
-        <div class="album py-5 bg-light">
-            <div class="container">
-
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    <!-- loop lagana hai -->
-                    {% for doctor in doctors %}
-                    <div class="col">
-                        <div class="card">
-                            {% if doctor.gender == 'male' %}<img class="card-img-top" src="https://www.iconbunny.com/icons/media/catalog/product/2/1/2131.12-doctor-icon-iconbunny.jpg" alt="Doctor Image"> {% else %}<img class="card-img-top" src="https://cdn-icons-png.flaticon.com/512/1869/1869354.png"
-                                alt="Doctor Image"> {% endif %}
-                            <h2 class="card-title">Dr. {{doctor.first_name}} {{doctor.last_name}}</h2>
-                            <p class="card-text">Specialty: {{doctor.speciality}}</p>
-                            <p class="card-text">Experience: {{doctor.experience}}+ years</p>
-                            <p class="card-text">Location: {{doctor.address}}</p>
-                            <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" onclick="myFunction(['{{doctor.first_name}} {{doctor.last_name}}','{{doctor.speciality}}','{{doctor.experience}}+ years','{{doctor.appointments}}'])">Book Appointment</a>
-                        </div>
-                    </div>{% endfor %}
-
-
-                </div>
-            </div>
-        </div>
-
-
-
-    </main>
-    <!-- End #main -->
-
+    </main><!-- End #main -->
+  
     <!-- End #main -->
 
     <!-- ======= Footer ======= -->
@@ -637,10 +484,6 @@
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src={% static "assets/vendor/apexcharts/apexcharts.min.js" %}></script>
     <script src={% static "assets/vendor/bootstrap/js/bootstrap.bundle.min.js" %}></script>
     <script src={% static "assets/vendor/chart.js/chart.min.js" %}></script>
