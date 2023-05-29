@@ -14,8 +14,8 @@ urlpatterns = [
     path('create_appointment/',views.create_appointments),
     path('bp/',views.bp),
     path('sugar/',views.sugar),
-    path('upload/',views.upload),
-    path('upload1/',views.upload1),
+    path('upload1/',views.upload),
+    path('upload/',views.upload1),
     path('appointment_history/', views.apt_history),
     path('appointment_cancellation/', views.apt_cancel),
     path('check_status/',views.check_status)

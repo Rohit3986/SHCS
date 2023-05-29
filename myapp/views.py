@@ -242,7 +242,6 @@ def create_appointment_slots(start_date,end_date,start_time,end_time,doctor):
     return k
 
 def bp(request):
-    get_all_symptoms()
     return render(request,"bp.html")
 
 def sugar(request):
